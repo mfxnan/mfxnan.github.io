@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mfxnan dev sandbox</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      color: #38bdf8;
+    }
+
+    header p {
+      margin-top: 10px;
+      color: #94a3b8;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .section-title {
+      margin: 40px 0 20px;
+      font-size: 1.5rem;
+      border-left: 4px solid #38bdf8;
+      padding-left: 10px;
+    }
+
+    .projects {
+      display: grid;
+      gap: 20px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background: #334155;
+    }
+
+    .card h3 {
+      color: #38bdf8;
+    }
+
+    .card p {
+      margin: 10px 0;
+      color: #cbd5f5;
+    }
+
+    .card a {
+      text-decoration: none;
+      color: #22c55e;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🚀 mfxnan dev sandbox</h1>
+  <p>learning, building, and improving — one step at a time</p>
+</header>
+
+<div class="container">
+
+  <h2 class="section-title">📚 About Me</h2>
+  <p>
+    I'm currently learning and exploring the world of development.  
+    This space is where I build projects, test ideas, and improve my skills step by step.
+  </p>
+
+  <h2 class="section-title">🛠 Projects</h2>
+  <div class="projects" id="projectList">
+    
+    <!-- Project Card -->
+    <div class="card">
+      <h3>Project Name</h3>
+      <p>Short description of what this project does.</p>
+      <a href="#">View Project →</a>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  ✨ built by mfxnan
+</footer>
+
+<script>
+  // OPTIONAL: Tambah project lewat sini biar gampang
+  const projects = [
+    {
+      name: "WiFi Monitor Tool",
+      desc: "CLI tool to monitor devices on network",
+      link: "#"
+    },
+    {
+      name: "Trading Bot",
+      desc: "Simple bot for crypto trading signals",
+      link: "#"
+    }
+  ];
+
+  const container = document.getElementById("projectList");
+
+  projects.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <h3>${p.name}</h3>
+      <p>${p.desc}</p>
+      <a href="${p.link}">View Project →</a>
+    `;
+
+    container.appendChild(card);
+  });
+</script>
+
+</body>
+</html>

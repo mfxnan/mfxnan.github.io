@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -85,69 +86,66 @@
     }
   </style>
 </head>
+
 <body>
 
-<header>
-  <h1>🚀 mfxnan dev sandbox</h1>
-  <p>learning, building, and improving — one step at a time</p>
-</header>
+  <header>
+    <h1>🚀 mfxnan dev sandbox</h1>
+    <p>learning, building, and improving one step at a time</p>
+  </header>
 
-<div class="container">
+  <div class="container">
 
-  <h2 class="section-title">📚 About Me</h2>
-  <p>
-    I'm currently learning and exploring the world of development.  
-    This space is where I build projects, test ideas, and improve my skills step by step.
-  </p>
+    <h2 class="section-title">📚 About Me</h2>
+    <p>
+      I'm currently learning and exploring the world of development.
+      This space is where I build projects, test ideas, and improve my skills step by step.
+    </p>
 
-  <h2 class="section-title">🛠 Projects</h2>
-  <div class="projects" id="projectList">
-    
-    <!-- Project Card -->
-    <div class="card">
-      <h3>Project Name</h3>
-      <p>Short description of what this project does.</p>
-      <a href="#">View Project →</a>
+    <h2 class="section-title">🛠 Projects</h2>
+    <div class="projects" id="projectList">
+
+      <!-- Project Card -->
+      <div class="card">
+        <h3>Brightnessctl</h3>
+        <p>This program allows you read and control device brightness on Linux. </p>
+        <a href="https://github.com/mfxnan/brightnessctl">View Project →</a>
+      </div>
+
     </div>
 
   </div>
 
-</div>
+  <footer>
+    ✨ built by mfxnan
+  </footer>
 
-<footer>
-  ✨ built by mfxnan
-</footer>
+  <script>
+    // OPTIONAL: Tambah project lewat sini biar gampang
+    const projects = [
+      {
+        name: "Koreksi Nota Ayam RC",
+        desc: "Rumus untuk koreksi nota ayam Rocket Chicken",
+        link: "RumusAyamRC/index.html"
+      },
+    ];
 
-<script>
-  // OPTIONAL: Tambah project lewat sini biar gampang
-  const projects = [
-    {
-      name: "WiFi Monitor Tool",
-      desc: "CLI tool to monitor devices on network",
-      link: "#"
-    },
-    {
-      name: "Trading Bot",
-      desc: "Simple bot for crypto trading signals",
-      link: "#"
-    }
-  ];
+    const container = document.getElementById("projectList");
 
-  const container = document.getElementById("projectList");
+    projects.forEach(p => {
+      const card = document.createElement("div");
+      card.className = "card";
 
-  projects.forEach(p => {
-    const card = document.createElement("div");
-    card.className = "card";
-
-    card.innerHTML = `
+      card.innerHTML = `
       <h3>${p.name}</h3>
       <p>${p.desc}</p>
       <a href="${p.link}">View Project →</a>
     `;
 
-    container.appendChild(card);
-  });
-</script>
+      container.appendChild(card);
+    });
+  </script>
 
 </body>
+
 </html>

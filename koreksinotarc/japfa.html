@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Ayam RC - Japfa & Agro</title>
+<style>
+:root {
+    --primary: #d00000;
+    --dark: #3d0000;
+    --bg: #f8f9fa;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.card {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+h2 { text-align: center; color: var(--primary); margin-bottom: 20px; }
+
+.input-group { margin-bottom: 15px; }
+
+label { 
+    display: block; 
+    font-weight: 600; 
+    margin-bottom: 8px; 
+    font-size: 14px;
+    color: var(--dark);
+}
+
+select, input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: 0.3s;
+}
+
+input:focus { border-color: var(--primary); outline: none; }
+
+.table-container {
+    margin-top: 25px;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid #eee;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th { background: #f1f1f1; padding: 12px; text-align: left; }
+td { padding: 12px; border-bottom: 1px solid #eee; }
+
+.total-row { background: #fff5f5; font-weight: bold; color: var(--primary); }
+
+.badge {
+    font-size: 10px;
+    background: #eee;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #666;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h2>🍗 Kalkulator Japfa/Agro</h2>
+
+    <div class="input-group">
+        <label>Supplier</label>
+        <select id="supplier" onchange="hitung()">
+            <option value="japfa">Japfa Food Indonesia</option>
+            <option value="agro">Ayam Agro Jaya</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>Total Harga di Nota (Rp)</label>
+        <input type="number" id="inputNota" placeholder="Masukkan total harga nota..." oninput="hitung()">
+    </div>
+
+    <div id="marinadeSection" class="input-group">
+        <label>Total Harga Marinade (Rp)</label>
+        <input type="number" id="inputMarinade" placeholder="Masukkan harga marinade..." oninput="hitung()">
+    </div>
+
+    <div class="input-group">
+        <label>Jumlah Ayam</label>
+        <input type="number" id="inputJumlahAyam" placeholder="Masukkan jumlah ayam..." value="1" oninput="hitung()">
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Bagian</th>
+                    <th>Asli</th>
+                    <th id="thMrnd">+Mrnd</th>
+                </tr>
+            </thead>
+            <tbody id="hasilBody">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+const dataBagian = [
+    { nama: 'Mentok (M)', berat: 150, kali: 1 },
+    { nama: 'Dada (Dd)', berat: 180, kali: 2 },
+    { nama: 'Paha Atas (Pa)', berat: 145, kali: 2 },
+    { nama: 'Paha Bawah (Pb)', berat: 95, kali: 2 },
+    { nama: 'Sayap (Syp)', berat: 105, kali: 2 }
+];
+
+const totalBeratEkor = 1200;
+
+function formatIDR(angka) {
+    return new Intl.NumberFormat('id-ID').format(Math.round(angka));
+}
+
+function hitung() {
+    const supplier = document.getElementById('supplier').value;
+    const totalNota = parseFloat(document.getElementById('inputNota').value) || 0;
+    const totalMarinade = parseFloat(document.getElementById('inputMarinade').value) || 0;
+    const jumlahAyam = parseFloat(document.getElementById('inputJumlahAyam').value) || 1;
+
+    const body = document.getElementById('hasilBody');
+    const mSection = document.getElementById('marinadeSection');
+    const thMrnd = document.getElementById('thMrnd');
+
+    // Sembunyikan marinade jika Agro Jaya
+    const showMarinade = supplier !== 'agro';
+    mSection.style.display = showMarinade ? 'block' : 'none';
+    thMrnd.style.display = showMarinade ? 'table-cell' : 'none';
+
+    let rows = '';
+    const marinadePerBagian = showMarinade ? totalMarinade / 5 : 0;
+
+    dataBagian.forEach(item => {
+        const proporsi = ((item.berat * item.kali) / totalBeratEkor) * jumlahAyam;
+        const hargaAsli = proporsi * totalNota;
+        const hargaFinal = showMarinade ? (hargaAsli + marinadePerBagian) : hargaAsli;
+
+        rows += `
+            <tr>
+                <td>${item.nama} <span class="badge">${item.kali}x</span></td>
+                <td>${formatIDR(hargaAsli)}</td>
+                <td style="font-weight:bold; color:#d00000; display:${showMarinade ? 'table-cell' : 'none'}">${formatIDR(hargaFinal)}</td>
+            </tr>
+        `;
+    });
+
+    const grandTotal = showMarinade ? (totalNota + totalMarinade) : totalNota;
+
+    rows += `
+        <tr class="total-row">
+            <td>TOTAL</td>
+            <td>${formatIDR(totalNota)}</td>
+            <td style="display:${showMarinade ? 'table-cell' : 'none'}">${formatIDR(grandTotal)}</td>
+        </tr>
+    `;
+
+    body.innerHTML = rows;
+}
+
+// Inisialisasi awal
+hitung();
+</script>
+
+</body>
+</html>

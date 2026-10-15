@@ -780,6 +780,10 @@
             grid-column: 1 / -1;
         }
 
+        .field[hidden] {
+            display: none;
+        }
+
         .field label,
         .field-label {
             font-size: 11px;
@@ -1127,7 +1131,8 @@
             </section>
         </main>
         <footer>
-            <div class="footer-inner"><span>Rocket Chicken KS Tubun</span><span>Menu dan harga dapat diperbarui secara berkala.</span></div>
+            <div class="footer-inner"><span>Rocket Chicken KS Tubun</span><span>Menu dan harga dapat diperbarui secara
+                    berkala.</span></div>
         </footer>
     </div>
 
@@ -1139,26 +1144,52 @@
     <dialog id="checkoutDialog" aria-labelledby="checkoutTitle">
         <section class="dialog-shell">
             <div class="dialog-top">
-                <div><div class="section-kicker">Pesanan Anda</div><h2 id="checkoutTitle">Keranjang &amp; checkout</h2><p>Periksa menu, jumlah, dan total sebelum lanjut ke WhatsApp.</p></div>
+                <div>
+                    <div class="section-kicker">Pesanan Anda</div>
+                    <h2 id="checkoutTitle">Keranjang &amp; checkout</h2>
+                    <p>Periksa menu, jumlah, dan total sebelum lanjut ke WhatsApp.</p>
+                </div>
                 <button class="icon-button" id="checkoutClose" type="button" aria-label="Tutup">×</button>
             </div>
             <div class="cart-lines" id="cartLines"></div>
-            <div class="cart-total-line"><strong>Subtotal pesanan</strong><strong id="checkoutSubtotal">Rp0</strong></div>
+            <div class="cart-total-line"><strong>Total pemesanan</strong><strong id="checkoutSubtotal">Rp0</strong>
+            </div>
             <p class="delivery-note">Jika memilih diantar, ongkir akan dibahas melalui WhatsApp.</p>
             <form id="checkoutForm">
                 <div class="form-grid">
-                    <div class="field"><label for="customerName">Nama pemesan</label><input id="customerName" name="customer_name" autocomplete="name" maxlength="100" required></div>
-                    <div class="field"><label for="customerPhone">Nomor HP / WhatsApp</label><input id="customerPhone" name="customer_phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="24" required></div>
-                    <div class="field full"><label for="customerAddress">Alamat pemesan</label><textarea id="customerAddress" name="customer_address" autocomplete="street-address" maxlength="400" required></textarea></div>
-                    <div class="field full"><span class="field-label">Pesanan</span><div class="fulfillment-options">
-                        <label class="fulfillment-option"><input type="radio" name="fulfillment" value="delivery" checked> Diantar</label>
-                        <label class="fulfillment-option"><input type="radio" name="fulfillment" value="pickup"> Diambil di outlet</label>
-                    </div></div>
-                    <div class="field"><label for="orderDate">Tanggal pesanan</label><input id="orderDate" name="order_date" type="date" required></div>
-                    <div class="field"><label for="orderTime">Jam pesanan</label><input id="orderTime" name="order_time" type="time" required></div>
-                    <div class="field full"><label for="orderNote">Keterangan lainnya</label><textarea id="orderNote" name="order_note" maxlength="500" placeholder="Contoh: level pedas, catatan lokasi, atau permintaan khusus"></textarea></div>
+                    <div class="field"><label for="customerName">Nama pemesan</label><input id="customerName"
+                            name="customer_name" autocomplete="name" maxlength="100" required></div>
+                    <div class="field"><label for="customerPhone">Nomor HP / WhatsApp</label><input id="customerPhone"
+                            name="customer_phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="24" required>
+                    </div>
+                    <div class="field full"><label for="customerAddress">Alamat pemesan</label><textarea
+                            id="customerAddress" name="customer_address" autocomplete="street-address" maxlength="400"
+                            required></textarea></div>
+                    <div class="field full"><span class="field-label">Pesanan</span>
+                        <div class="fulfillment-options">
+                            <label class="fulfillment-option"><input type="radio" name="fulfillment" value="delivery"
+                                    checked> Diantar</label>
+                            <label class="fulfillment-option"><input type="radio" name="fulfillment" value="pickup">
+                                Ambil sendiri</label>
+                        </div>
+                    </div>
+                    <div class="field full" id="deliveryAddressField"><label for="deliveryAddress">Alamat
+                            pengantaran</label><textarea id="deliveryAddress" name="delivery_address"
+                            autocomplete="shipping street-address" maxlength="400" required></textarea></div>
+                    <div class="field"><label for="orderDate">Tanggal pesanan</label><input id="orderDate"
+                            name="order_date" type="date" required></div>
+                    <div class="field"><label for="orderTime">Jam pesanan</label><input id="orderTime" name="order_time"
+                            type="time" required></div>
+                    <div class="field full"><label for="orderNote">Keterangan lainnya</label><textarea id="orderNote"
+                            name="order_note" maxlength="500"
+                            placeholder="Contoh: level pedas, catatan lokasi, atau permintaan khusus"></textarea></div>
+                    <div class="field"><label for="downPayment">DP (Rp)</label><input id="downPayment"
+                            name="down_payment" type="number" min="0" step="500" value="0" inputmode="numeric"></div>
+                    <div class="cart-total-line"><strong>Sisa pembayaran</strong><strong
+                            id="remainingPayment">Rp0</strong></div>
                 </div>
-                <div class="form-actions checkout-actions"><button class="button" type="submit">Lanjut pesan via WhatsApp</button></div>
+                <div class="form-actions checkout-actions"><button class="button" type="submit">Lanjut pesan via
+                        WhatsApp</button></div>
             </form>
         </section>
     </dialog>
@@ -1169,7 +1200,7 @@
         const CONFIG = {
             supabaseUrl: 'https://ulpckwlazrnhxvjthlgh.supabase.co',
             supabasePublishableKey: 'sb_publishable_sxy7RSWC7Lo5ggQyPTvjRA_fH_xdsLJ',
-            outletWhatsApp: ''
+            outletWhatsApp: '6285725489277'
         };
 
         const MENU_TABLE = 'menus';
@@ -1334,12 +1365,28 @@
             });
             const { subtotal } = getCartTotals();
             document.getElementById('checkoutSubtotal').textContent = rupiah.format(subtotal);
+            updatePaymentSummary(true);
             document.querySelector('#checkoutForm button[type="submit"]').disabled = cart.size === 0;
+        }
+
+        function updatePaymentSummary(clampToTotal = false) {
+            const { subtotal } = getCartTotals();
+            const downPaymentInput = document.getElementById('downPayment');
+            downPaymentInput.max = String(subtotal);
+            let downPayment = Number(downPaymentInput.value) || 0;
+            if (clampToTotal && downPayment > subtotal) {
+                downPayment = subtotal;
+                downPaymentInput.value = String(downPayment);
+            }
+            document.getElementById('remainingPayment').textContent = rupiah.format(Math.max(0, subtotal - downPayment));
         }
 
         function syncFulfillmentFields() {
             const isDelivery = document.querySelector('input[name="fulfillment"]:checked').value === 'delivery';
-            document.getElementById('customerAddress').setAttribute('aria-label', isDelivery ? 'Alamat pengantaran' : 'Alamat pemesan');
+            const deliveryAddressField = document.getElementById('deliveryAddressField');
+            const deliveryAddress = document.getElementById('deliveryAddress');
+            deliveryAddressField.hidden = !isDelivery;
+            deliveryAddress.required = isDelivery;
         }
 
         function sendOrder(event) {
@@ -1358,27 +1405,52 @@
                 document.getElementById('customerPhone').focus();
                 return;
             }
-            const fulfillment = form.get('fulfillment') === 'delivery' ? 'Diantar' : 'Diambil di outlet';
             const { subtotal } = getCartTotals();
-            const orderLines = [...cart.values()].map(({ item, quantity }) =>
-                `- ${item.name} x${quantity} = ${rupiah.format(quantity * item.price)}`
+            const downPayment = Number(form.get('down_payment')) || 0;
+            if (!Number.isSafeInteger(downPayment) || downPayment < 0 || downPayment > subtotal) {
+                showToast('DP harus berupa angka antara Rp0 dan total pemesanan.');
+                document.getElementById('downPayment').focus();
+                return;
+            }
+            const isDelivery = form.get('fulfillment') === 'delivery';
+            const fulfillment = isDelivery ? 'Diantar' : 'Ambil sendiri';
+            const orderLines = [...cart.values()].map(({ item, quantity }, index) =>
+                `${index + 1}. Nama paket/menu: ${item.name}\n    Jumlah: ${quantity}\n    Harga per box: ${rupiah.format(item.price)}`
             );
-            const address = String(form.get('customer_address')).trim();
+            const date = new Date(`${form.get('order_date')}T00:00:00`).toLocaleDateString('id-ID', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
+            const deliveryAddress = isDelivery ? String(form.get('delivery_address')).trim() : '-';
+            const note = String(form.get('order_note')).trim() || '-';
             const message = [
-                '*PESANAN ROCKET CHICKEN KS TUBUN*',
+                'Halo Rocket Chicken KS Tubun 👋🏻',
                 '',
+                'Saya ingin melakukan pemesanan dengan rincian berikut:',
+                '',
+                '👤 DATA PEMESAN',
                 `Nama: ${String(form.get('customer_name')).trim()}`,
-                `Nomor HP: ${customerPhone}`,
-                `Alamat: ${address}`,
-                `Pesanan: ${fulfillment}`,
-                `Jadwal: ${form.get('order_date')} pukul ${form.get('order_time')}`,
+                `No. HP: ${customerPhone}`,
+                `Alamat: ${String(form.get('customer_address')).trim()}`,
                 '',
-                '*Rincian menu:*',
+                '🍗 DETAIL PESANAN',
                 ...orderLines,
                 '',
-                `Subtotal: ${rupiah.format(subtotal)}`,
-                fulfillment === 'Diantar' ? 'Ongkir: dibahas melalui chat WhatsApp' : 'Ongkir: tidak ada (ambil di outlet)',
-                `Keterangan: ${String(form.get('order_note')).trim() || '-'}`
+                '💰 TOTAL PEMESANAN',
+                `Total: ${rupiah.format(subtotal)}`,
+                `DP: ${rupiah.format(downPayment)}`,
+                `Sisa pembayaran: ${rupiah.format(subtotal - downPayment)}`,
+                '',
+                '📅 JADWAL PESANAN',
+                `Tanggal pesanan: ${date}`,
+                `Jam pesanan: ${form.get('order_time')}`,
+                '',
+                '📍 PENGAMBILAN/PENGANTARAN',
+                `Metode: ${fulfillment}`,
+                `Alamat pengantaran: ${deliveryAddress}`,
+                ...(isDelivery ? ['Ongkir: dibahas melalui WhatsApp'] : []),
+                `Catatan tambahan: ${note}`,
+                '',
+                'Terima kasih. 🙏🏻'
             ].join('\n');
             window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
         }
@@ -1411,7 +1483,7 @@
             menuGrid.innerHTML = '<div class="skeleton" aria-label="Memuat menu"></div>';
             const { data, error } = await supabaseClient
                 .from(MENU_TABLE)
-                .select('id, category, display_category, name, description, price, search_terms, active, sort_order, image_url')
+                .select('id, category, display_category, name, description, price, search_terms, active, sort_order')
                 .eq('active', true)
                 .order('sort_order', { ascending: true })
                 .order('name', { ascending: true });

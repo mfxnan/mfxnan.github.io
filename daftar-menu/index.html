@@ -472,6 +472,190 @@
             font-weight: 700;
         }
 
+        .menu-order-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .menu-order-row .menu-price {
+            min-width: 0;
+            padding-top: 0;
+            border-top: 0;
+        }
+
+        .quantity-control {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex: 0 0 auto;
+        }
+
+        .quantity-control button {
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            background: var(--white);
+            color: var(--ink);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .quantity-control button:hover {
+            border-color: var(--ink);
+        }
+
+        .quantity-value {
+            min-width: 18px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .cart-dock {
+            position: fixed;
+            z-index: 8;
+            right: 20px;
+            bottom: max(18px, env(safe-area-inset-bottom));
+            left: 20px;
+            width: min(520px, calc(100% - 40px));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-inline: auto;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--white);
+            box-shadow: 0 8px 30px #1113;
+        }
+
+        .cart-dock[hidden] {
+            display: none;
+        }
+
+        .cart-dock-summary {
+            display: grid;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .cart-dock-summary span {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .cart-dock-summary strong {
+            font-size: 15px;
+        }
+
+        .cart-dock .button {
+            flex: 0 0 auto;
+        }
+
+        .cart-lines {
+            display: grid;
+            gap: 8px;
+            max-height: 25vh;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+
+        .cart-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .cart-line-main {
+            min-width: 0;
+        }
+
+        .cart-line-main strong,
+        .cart-line-main span {
+            display: block;
+        }
+
+        .cart-line-main strong {
+            overflow-wrap: anywhere;
+            font-size: 13px;
+        }
+
+        .cart-line-main span {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .cart-total-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 0;
+            border-top: 1px solid var(--ink);
+            font-size: 14px;
+        }
+
+        .delivery-note {
+            margin: -5px 0 18px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .fulfillment-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .fulfillment-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 42px;
+            margin: 0;
+            padding: 9px 11px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            background: var(--white);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .fulfillment-option:has(input:checked) {
+            border-color: var(--ink);
+            box-shadow: inset 0 0 0 1px var(--ink);
+        }
+
+        .fulfillment-option input {
+            accent-color: var(--red);
+        }
+
+        .field input[type="date"],
+        .field input[type="time"] {
+            width: 100%;
+        }
+
+        .checkout-actions {
+            justify-content: flex-end;
+        }
+
+        .checkout-empty {
+            padding: 14px 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
         .empty-state {
             grid-column: 1 / -1;
             display: grid;
@@ -596,7 +780,8 @@
             grid-column: 1 / -1;
         }
 
-        .field label {
+        .field label,
+        .field-label {
             font-size: 11px;
             font-weight: 700;
         }
@@ -632,67 +817,10 @@
             margin-top: 18px;
         }
 
-        .admin-list {
-            display: grid;
-            gap: 8px;
-            max-height: 48vh;
-            overflow: auto;
-        }
-
-        .admin-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            border: 1px solid var(--line);
-            border-radius: 5px;
-            background: white;
-        }
-
-        .admin-thumb {
-            width: 52px;
-            height: 52px;
-            flex: 0 0 52px;
-            border-radius: 3px;
-            object-fit: cover;
-            background: #e7e3dc;
-        }
-
-        .admin-row-main {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .admin-row-main strong {
-            display: block;
-            overflow: hidden;
-            font-size: 12px;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .admin-row-main span {
-            color: var(--muted);
-            font-size: 11px;
-        }
-
-        .admin-row-actions {
-            display: flex;
-            gap: 6px;
-        }
-
         .notice {
             min-height: 18px;
             margin: 10px 0 0;
             color: var(--red-dark);
-            font-size: 12px;
-        }
-
-        .admin-empty {
-            padding: 18px;
-            border: 1px dashed var(--line);
-            color: var(--muted);
-            text-align: center;
             font-size: 12px;
         }
 
@@ -873,6 +1001,15 @@
                 font-size: 18px;
             }
 
+            .menu-order-row {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .menu-order-row .menu-price {
+                font-size: 13px;
+            }
+
             .menu-description {
                 min-height: 48px;
                 font-size: 10px;
@@ -892,6 +1029,23 @@
                 padding: 18px;
             }
 
+            .cart-dock {
+                right: 12px;
+                bottom: max(12px, env(safe-area-inset-bottom));
+                width: calc(100% - 24px);
+                padding: 10px;
+            }
+
+            .cart-dock .button {
+                min-height: 38px;
+                padding-inline: 11px;
+                font-size: 12px;
+            }
+
+            .fulfillment-options {
+                grid-template-columns: 1fr;
+            }
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
@@ -900,23 +1054,6 @@
                 grid-column: auto;
             }
 
-            .admin-row {
-                align-items: start;
-            }
-
-            .admin-thumb {
-                width: 42px;
-                height: 42px;
-                flex-basis: 42px;
-            }
-
-            .admin-row-actions {
-                flex-direction: column;
-            }
-
-            .admin-row-actions .button {
-                min-height: 30px;
-            }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -943,7 +1080,6 @@
             <nav class="header-actions" aria-label="Navigasi utama">
                 <a class="text-link" href="#menu">Menu</a>
                 <a class="button small" href="#kontak">Hubungi outlet</a>
-                <button class="button secondary small" id="adminOpen" type="button">Admin</button>
             </nav>
         </header>
 
@@ -991,12 +1127,42 @@
             </section>
         </main>
         <footer>
-            <div class="footer-inner"><span>Rocket Chicken KS Tubun</span><span>Menu dan harga dapat diperbarui oleh
-                    admin outlet.</span></div>
+            <div class="footer-inner"><span>Rocket Chicken KS Tubun</span><span>Menu dan harga dapat diperbarui secara berkala.</span></div>
         </footer>
     </div>
 
-    <dialog id="adminDialog" aria-labelledby="adminDialogTitle"></dialog>
+    <aside class="cart-dock" id="cartDock" aria-live="polite" hidden>
+        <div class="cart-dock-summary"><span id="cartCount">0 item</span><strong id="cartSubtotal">Rp0</strong></div>
+        <button class="button" id="checkoutOpen" type="button">Lihat keranjang</button>
+    </aside>
+
+    <dialog id="checkoutDialog" aria-labelledby="checkoutTitle">
+        <section class="dialog-shell">
+            <div class="dialog-top">
+                <div><div class="section-kicker">Pesanan Anda</div><h2 id="checkoutTitle">Keranjang &amp; checkout</h2><p>Periksa menu, jumlah, dan total sebelum lanjut ke WhatsApp.</p></div>
+                <button class="icon-button" id="checkoutClose" type="button" aria-label="Tutup">×</button>
+            </div>
+            <div class="cart-lines" id="cartLines"></div>
+            <div class="cart-total-line"><strong>Subtotal pesanan</strong><strong id="checkoutSubtotal">Rp0</strong></div>
+            <p class="delivery-note">Jika memilih diantar, ongkir akan dibahas melalui WhatsApp.</p>
+            <form id="checkoutForm">
+                <div class="form-grid">
+                    <div class="field"><label for="customerName">Nama pemesan</label><input id="customerName" name="customer_name" autocomplete="name" maxlength="100" required></div>
+                    <div class="field"><label for="customerPhone">Nomor HP / WhatsApp</label><input id="customerPhone" name="customer_phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="24" required></div>
+                    <div class="field full"><label for="customerAddress">Alamat pemesan</label><textarea id="customerAddress" name="customer_address" autocomplete="street-address" maxlength="400" required></textarea></div>
+                    <div class="field full"><span class="field-label">Pesanan</span><div class="fulfillment-options">
+                        <label class="fulfillment-option"><input type="radio" name="fulfillment" value="delivery" checked> Diantar</label>
+                        <label class="fulfillment-option"><input type="radio" name="fulfillment" value="pickup"> Diambil di outlet</label>
+                    </div></div>
+                    <div class="field"><label for="orderDate">Tanggal pesanan</label><input id="orderDate" name="order_date" type="date" required></div>
+                    <div class="field"><label for="orderTime">Jam pesanan</label><input id="orderTime" name="order_time" type="time" required></div>
+                    <div class="field full"><label for="orderNote">Keterangan lainnya</label><textarea id="orderNote" name="order_note" maxlength="500" placeholder="Contoh: level pedas, catatan lokasi, atau permintaan khusus"></textarea></div>
+                </div>
+                <div class="form-actions checkout-actions"><button class="button" type="submit">Lanjut pesan via WhatsApp</button></div>
+            </form>
+        </section>
+    </dialog>
+
     <div id="toast" role="status" aria-live="polite"></div>
 
     <script>
@@ -1007,18 +1173,15 @@
         };
 
         const MENU_TABLE = 'menus';
-        const IMAGE_BUCKET = 'menu-images';
         const supabaseClient = window.supabase?.createClient(CONFIG.supabaseUrl, CONFIG.supabasePublishableKey);
         const menuGrid = document.getElementById('menuGrid');
         const categoryList = document.getElementById('categoryList');
         const statusLabel = document.getElementById('connectionStatus');
-        const adminDialog = document.getElementById('adminDialog');
         const rupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
         let menuItems = [];
         let activeCategory = 'Semua';
-        let adminItems = [];
-        let editingId = null;
         let toastTimeout;
+        const cart = new Map();
 
         function showToast(message) {
             const toast = document.getElementById('toast');
@@ -1070,7 +1233,7 @@
             if (!menuItems.length) {
                 const empty = makeElement('div', 'empty-state');
                 empty.append(makeElement('h3', '', 'Menu sedang disiapkan'));
-                empty.append(makeElement('p', '', 'Daftar menu outlet KS Tubun belum tersedia. Admin outlet dapat masuk untuk menambahkan produk, harga, dan foto.'));
+                empty.append(makeElement('p', '', 'Daftar menu outlet KS Tubun belum tersedia. Coba muat ulang setelah beberapa saat.'));
                 menuGrid.append(empty);
                 return;
             }
@@ -1104,10 +1267,120 @@
                 content.append(makeElement('div', 'menu-category', item.category || 'Menu'));
                 content.append(makeElement('h3', '', item.name));
                 content.append(makeElement('p', 'menu-description', item.description || 'Menu Rocket Chicken favoritmu.'));
-                content.append(makeElement('div', 'menu-price', rupiah.format(item.price)));
+                const orderRow = makeElement('div', 'menu-order-row');
+                orderRow.append(makeElement('div', 'menu-price', rupiah.format(item.price)));
+                orderRow.append(createQuantityControl(item));
+                content.append(orderRow);
                 card.append(photo, content);
                 menuGrid.append(card);
             });
+        }
+
+        function createQuantityControl(item) {
+            const quantity = cart.get(String(item.id))?.quantity || 0;
+            const control = makeElement('div', 'quantity-control');
+            const decrease = makeElement('button', '', '−');
+            decrease.type = 'button';
+            decrease.disabled = quantity === 0;
+            decrease.setAttribute('aria-label', `Kurangi ${item.name}`);
+            decrease.addEventListener('click', () => changeQuantity(item, -1));
+            const value = makeElement('span', 'quantity-value', String(quantity));
+            value.setAttribute('aria-label', `Jumlah ${item.name}`);
+            const increase = makeElement('button', '', '+');
+            increase.type = 'button';
+            increase.setAttribute('aria-label', `Tambah ${item.name}`);
+            increase.addEventListener('click', () => changeQuantity(item, 1));
+            control.append(decrease, value, increase);
+            return control;
+        }
+
+        function changeQuantity(item, delta) {
+            const key = String(item.id);
+            const quantity = Math.max(0, (cart.get(key)?.quantity || 0) + delta);
+            if (quantity === 0) cart.delete(key);
+            else cart.set(key, { item, quantity });
+            renderMenu();
+            updateCartDock();
+            if (document.getElementById('checkoutDialog').open) renderCartContents();
+        }
+
+        function getCartTotals() {
+            return [...cart.values()].reduce((totals, entry) => ({
+                count: totals.count + entry.quantity,
+                subtotal: totals.subtotal + entry.quantity * entry.item.price
+            }), { count: 0, subtotal: 0 });
+        }
+
+        function updateCartDock() {
+            const { count, subtotal } = getCartTotals();
+            document.getElementById('cartDock').hidden = count === 0;
+            document.getElementById('cartCount').textContent = `${count} item`;
+            document.getElementById('cartSubtotal').textContent = rupiah.format(subtotal);
+        }
+
+        function renderCartContents() {
+            const lines = document.getElementById('cartLines');
+            lines.replaceChildren();
+            if (cart.size === 0) {
+                lines.append(makeElement('p', 'checkout-empty', 'Keranjang masih kosong. Tambahkan menu dari daftar terlebih dahulu.'));
+            }
+            cart.forEach(({ item, quantity }) => {
+                const line = makeElement('div', 'cart-line');
+                const main = makeElement('div', 'cart-line-main');
+                main.append(makeElement('strong', '', item.name));
+                main.append(makeElement('span', '', `${quantity} × ${rupiah.format(item.price)} = ${rupiah.format(quantity * item.price)}`));
+                line.append(main, createQuantityControl(item));
+                lines.append(line);
+            });
+            const { subtotal } = getCartTotals();
+            document.getElementById('checkoutSubtotal').textContent = rupiah.format(subtotal);
+            document.querySelector('#checkoutForm button[type="submit"]').disabled = cart.size === 0;
+        }
+
+        function syncFulfillmentFields() {
+            const isDelivery = document.querySelector('input[name="fulfillment"]:checked').value === 'delivery';
+            document.getElementById('customerAddress').setAttribute('aria-label', isDelivery ? 'Alamat pengantaran' : 'Alamat pemesan');
+        }
+
+        function sendOrder(event) {
+            event.preventDefault();
+            if (cart.size === 0) return;
+            const phone = CONFIG.outletWhatsApp.replace(/\D/g, '');
+            if (!phone) {
+                showToast('Nomor WhatsApp outlet belum dikonfigurasi.');
+                return;
+            }
+            const form = new FormData(event.currentTarget);
+            const customerPhone = String(form.get('customer_phone')).trim();
+            const phoneDigits = customerPhone.replace(/\D/g, '');
+            if (phoneDigits.length < 8 || phoneDigits.length > 15) {
+                showToast('Periksa kembali nomor HP / WhatsApp pemesan.');
+                document.getElementById('customerPhone').focus();
+                return;
+            }
+            const fulfillment = form.get('fulfillment') === 'delivery' ? 'Diantar' : 'Diambil di outlet';
+            const { subtotal } = getCartTotals();
+            const orderLines = [...cart.values()].map(({ item, quantity }) =>
+                `- ${item.name} x${quantity} = ${rupiah.format(quantity * item.price)}`
+            );
+            const address = String(form.get('customer_address')).trim();
+            const message = [
+                '*PESANAN ROCKET CHICKEN KS TUBUN*',
+                '',
+                `Nama: ${String(form.get('customer_name')).trim()}`,
+                `Nomor HP: ${customerPhone}`,
+                `Alamat: ${address}`,
+                `Pesanan: ${fulfillment}`,
+                `Jadwal: ${form.get('order_date')} pukul ${form.get('order_time')}`,
+                '',
+                '*Rincian menu:*',
+                ...orderLines,
+                '',
+                `Subtotal: ${rupiah.format(subtotal)}`,
+                fulfillment === 'Diantar' ? 'Ongkir: dibahas melalui chat WhatsApp' : 'Ongkir: tidak ada (ambil di outlet)',
+                `Keterangan: ${String(form.get('order_note')).trim() || '-'}`
+            ].join('\n');
+            window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
         }
 
         function normalizeMenuItem(item) {
@@ -1131,6 +1404,7 @@
                 menuItems = [];
                 renderCategories();
                 renderMenu();
+                updateCartDock();
                 return;
             }
             setConnection('Memuat menu...');
@@ -1146,13 +1420,21 @@
                 menuItems = [];
                 renderCategories();
                 renderMenu();
+                updateCartDock();
                 showToast(`Menu belum dapat dimuat: ${error.message}`);
                 return;
             }
             menuItems = (data || []).map(normalizeMenuItem).filter(Boolean);
+            for (const [key, entry] of cart) {
+                const refreshedItem = menuItems.find(item => String(item.id) === key);
+                if (refreshedItem) cart.set(key, { ...entry, item: refreshedItem });
+                else cart.delete(key);
+            }
             setConnection('Menu diperbarui langsung', 'online');
             renderCategories();
             renderMenu();
+            updateCartDock();
+            if (document.getElementById('checkoutDialog').open) renderCartContents();
         }
 
         function safeImageUrl(url) {
@@ -1165,198 +1447,17 @@
             }
         }
 
-        function renderAdminLogin(message = '') {
-            adminDialog.innerHTML = `
-				<section class="dialog-shell">
-					<div class="dialog-top"><div><div class="section-kicker">Pengelolaan outlet</div><h2 id="adminDialogTitle">Masuk admin</h2><p>Gunakan akun admin Rocket Chicken KS Tubun.</p></div><button class="icon-button" type="button" data-close aria-label="Tutup">×</button></div>
-					<form id="loginForm">
-						<div class="form-grid">
-							<div class="field full"><label for="adminEmail">Email</label><input id="adminEmail" name="email" type="email" autocomplete="username" required></div>
-							<div class="field full"><label for="adminPassword">Password</label><input id="adminPassword" name="password" type="password" autocomplete="current-password" required></div>
-						</div>
-						<p class="notice" id="adminNotice">${message}</p>
-						<div class="form-actions"><span></span><button class="button" type="submit">Masuk</button></div>
-					</form>
-				</section>`;
-        }
-
-        async function renderAdminDashboard() {
-            adminDialog.innerHTML = `
-				<section class="dialog-shell">
-					<div class="dialog-top"><div><div class="section-kicker">Pengelolaan outlet</div><h2 id="adminDialogTitle">Kelola menu</h2><p>Ubah informasi menu yang tampil untuk pelanggan.</p></div><button class="icon-button" type="button" data-close aria-label="Tutup">×</button></div>
-					<div class="form-actions" style="margin:0 0 14px"><button class="button" id="addProduct" type="button">+ Produk baru</button><button class="button secondary small" id="signOut" type="button">Keluar</button></div>
-					<div class="admin-list" id="adminList"><div class="admin-empty">Memuat produk...</div></div>
-				</section>`;
-            const { data, error } = await supabaseClient.from(MENU_TABLE).select('*').order('sort_order').order('name');
-            const list = document.getElementById('adminList');
-            if (error) {
-                list.replaceChildren(makeElement('p', 'notice', `Tidak dapat memuat data: ${error.message}`));
-                return;
-            }
-            adminItems = (data || []).map(normalizeMenuItem).filter(Boolean);
-            list.replaceChildren();
-            if (!adminItems.length) list.append(makeElement('div', 'admin-empty', 'Belum ada produk. Tambahkan menu pertama outlet.'));
-            adminItems.forEach(item => {
-                const row = makeElement('div', 'admin-row');
-                const thumbnail = document.createElement('img');
-                thumbnail.className = 'admin-thumb';
-                thumbnail.alt = '';
-                thumbnail.src = safeImageUrl(item.image_url) || 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=120&q=50';
-                const main = makeElement('div', 'admin-row-main');
-                main.append(makeElement('strong', '', item.name));
-                main.append(makeElement('span', '', `${rupiah.format(item.price)} · ${item.category || 'Tanpa kategori'} · ${item.is_available ? 'Tampil' : 'Disembunyikan'}`));
-                const actions = makeElement('div', 'admin-row-actions');
-                const edit = makeElement('button', 'button secondary small', 'Ubah');
-                edit.type = 'button';
-                edit.addEventListener('click', () => renderProductForm(item));
-                const remove = makeElement('button', 'button secondary small', 'Hapus');
-                remove.type = 'button';
-                remove.addEventListener('click', () => deleteProduct(item));
-                actions.append(edit, remove);
-                row.append(thumbnail, main, actions);
-                list.append(row);
-            });
-            document.getElementById('addProduct').addEventListener('click', () => renderProductForm());
-            document.getElementById('signOut').addEventListener('click', async () => {
-                await supabaseClient.auth.signOut();
-                renderAdminLogin();
-            });
-        }
-
-        function renderProductForm(item = null, message = '') {
-            editingId = item?.id || null;
-            adminDialog.innerHTML = `
-				<section class="dialog-shell">
-					<div class="dialog-top"><div><div class="section-kicker">Pengelolaan outlet</div><h2 id="adminDialogTitle">${item ? 'Ubah produk' : 'Produk baru'}</h2><p>Harga diisi dalam rupiah tanpa pemisah.</p></div><button class="icon-button" type="button" data-close aria-label="Tutup">×</button></div>
-					<form id="productForm">
-						<div class="form-grid">
-							<div class="field"><label for="productName">Nama menu</label><input id="productName" name="name" maxlength="100" required></div>
-							<div class="field"><label for="productCategory">Kategori</label><input id="productCategory" name="category" maxlength="50" placeholder="Contoh: Ayam" required></div>
-							<div class="field"><label for="productPrice">Harga (Rp)</label><input id="productPrice" name="price" type="number" min="0" step="500" required></div>
-							<div class="field"><label for="productSort">Urutan tampil</label><input id="productSort" name="sort_order" type="number" step="1" value="0"></div>
-							<div class="field full"><label for="productDescription">Deskripsi</label><textarea id="productDescription" name="description" maxlength="240" placeholder="Deskripsi singkat (opsional)"></textarea></div>
-							<div class="field full"><label for="productImageUrl">URL foto (opsional)</label><input id="productImageUrl" name="image_url" type="url" placeholder="https://..."><span class="hint">Atau unggah foto JPG, PNG, WebP, atau GIF (maks. 5 MB).</span></div>
-							<div class="field full"><label for="productImageFile">Unggah foto</label><input id="productImageFile" name="image_file" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></div>
-							<div class="field full"><label><input id="productAvailable" name="is_available" type="checkbox" checked style="width:auto;min-height:0;margin-right:6px">Tampilkan menu kepada pelanggan</label></div>
-						</div>
-						<p class="notice" id="adminNotice">${message}</p>
-						<div class="form-actions"><button class="button secondary" id="backToAdmin" type="button">Kembali</button><button class="button" id="saveProduct" type="submit">Simpan produk</button></div>
-					</form>
-				</section>`;
-            if (item) {
-                document.getElementById('productName').value = item.name || '';
-                document.getElementById('productCategory').value = item.category || '';
-                document.getElementById('productPrice').value = item.price ?? '';
-                document.getElementById('productSort').value = item.sort_order ?? 0;
-                document.getElementById('productDescription').value = item.description || '';
-                document.getElementById('productImageUrl').value = item.image_url || '';
-                document.getElementById('productAvailable').checked = item.is_available !== false;
-            }
-            document.getElementById('backToAdmin').addEventListener('click', renderAdminDashboard);
-            document.getElementById('productImageFile').addEventListener('change', event => {
-                const file = event.target.files[0];
-                if (file && (!file.type.startsWith('image/') || file.size > 5 * 1024 * 1024)) {
-                    event.target.value = '';
-                    document.getElementById('adminNotice').textContent = 'Pilih file gambar dengan ukuran maksimal 5 MB.';
-                }
-            });
-        }
-
-        async function uploadProductImage(file) {
-            if (!file.type.startsWith('image/') || file.size > 5 * 1024 * 1024) {
-                throw new Error('Foto harus berupa gambar dengan ukuran maksimal 5 MB.');
-            }
-            const extension = ({ 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' })[file.type];
-            if (!extension) throw new Error('Format foto yang didukung: JPG, PNG, WebP, atau GIF.');
-            const path = `${crypto.randomUUID()}.${extension}`;
-            const { error } = await supabaseClient.storage.from(IMAGE_BUCKET).upload(path, file, { contentType: file.type, cacheControl: '3600' });
-            if (error) throw error;
-            return supabaseClient.storage.from(IMAGE_BUCKET).getPublicUrl(path).data.publicUrl;
-        }
-
-        async function saveProduct(form) {
-            const saveButton = document.getElementById('saveProduct');
-            const notice = document.getElementById('adminNotice');
-            saveButton.disabled = true;
-            saveButton.textContent = 'Menyimpan...';
-            notice.textContent = '';
-            try {
-                const formData = new FormData(form);
-                const name = String(formData.get('name')).trim();
-                const category = String(formData.get('category')).trim();
-                const price = Number(formData.get('price'));
-                if (!name || !category || !Number.isFinite(price) || price < 0) throw new Error('Periksa kembali nama, kategori, dan harga menu.');
-                let imageUrl = String(formData.get('image_url') || '').trim();
-                if (imageUrl && !safeImageUrl(imageUrl)) throw new Error('URL foto harus menggunakan http atau https.');
-                const imageFile = formData.get('image_file');
-                if (imageFile instanceof File && imageFile.size > 0) imageUrl = await uploadProductImage(imageFile);
-                if (!imageUrl && editingId) imageUrl = adminItems.find(product => product.id === editingId)?.image_url || '';
-                const payload = {
-                    name,
-                    category,
-                    display_category: category,
-                    price,
-                    description: String(formData.get('description') || '').trim(),
-                    image_url: imageUrl || null,
-                    active: formData.get('is_available') === 'on',
-                    search_terms: `${name} ${category} ${String(formData.get('description') || '').trim()}`.trim(),
-                    sort_order: Number(formData.get('sort_order')) || 0
-                };
-                const query = editingId
-                    ? supabaseClient.from(MENU_TABLE).update(payload).eq('id', editingId)
-                    : supabaseClient.from(MENU_TABLE).insert(payload);
-                const { error } = await query;
-                if (error) throw error;
-                await loadMenu();
-                await renderAdminDashboard();
-                showToast(editingId ? 'Perubahan menu berhasil disimpan.' : 'Menu baru berhasil ditambahkan.');
-            } catch (error) {
-                notice.textContent = error.message || 'Produk belum dapat disimpan.';
-                saveButton.disabled = false;
-                saveButton.textContent = 'Simpan produk';
-            }
-        }
-
-        async function deleteProduct(item) {
-            if (!window.confirm(`Hapus menu “${item.name}”?`)) return;
-            const { error } = await supabaseClient.from(MENU_TABLE).delete().eq('id', item.id);
-            if (error) {
-                showToast(`Menu belum dapat dihapus: ${error.message}`);
-                return;
-            }
-            await loadMenu();
-            await renderAdminDashboard();
-            showToast('Menu berhasil dihapus.');
-        }
-
         document.getElementById('searchInput').addEventListener('input', renderMenu);
         document.getElementById('refreshMenu').addEventListener('click', loadMenu);
-        document.getElementById('adminOpen').addEventListener('click', async () => {
-            if (!supabaseClient) {
-                showToast('Koneksi Supabase belum tersedia.');
-                return;
-            }
-            adminDialog.showModal();
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) await renderAdminDashboard();
-            else renderAdminLogin();
+        document.getElementById('checkoutOpen').addEventListener('click', () => {
+            renderCartContents();
+            document.getElementById('checkoutDialog').showModal();
         });
-        adminDialog.addEventListener('click', event => {
-            if (event.target === adminDialog || event.target.closest('[data-close]')) adminDialog.close();
-        });
-        adminDialog.addEventListener('submit', async event => {
-            event.preventDefault();
-            if (event.target.id === 'loginForm') {
-                const formData = new FormData(event.target);
-                const { error } = await supabaseClient.auth.signInWithPassword({ email: formData.get('email'), password: formData.get('password') });
-                if (error) {
-                    const notice = document.getElementById('adminNotice');
-                    if (notice) notice.textContent = `Tidak dapat masuk: ${error.message}`;
-                    return;
-                }
-                await renderAdminDashboard();
-            }
-            if (event.target.id === 'productForm') await saveProduct(event.target);
+        document.getElementById('checkoutClose').addEventListener('click', () => document.getElementById('checkoutDialog').close());
+        document.getElementById('checkoutForm').addEventListener('submit', sendOrder);
+        document.querySelectorAll('input[name="fulfillment"]').forEach(input => input.addEventListener('change', syncFulfillmentFields));
+        document.getElementById('checkoutDialog').addEventListener('click', event => {
+            if (event.target === event.currentTarget) event.currentTarget.close();
         });
         document.getElementById('contactButton').addEventListener('click', event => {
             const phone = CONFIG.outletWhatsApp.replace(/\D/g, '');
@@ -1370,6 +1471,11 @@
             event.currentTarget.rel = 'noopener noreferrer';
         });
 
+        const today = new Date();
+        const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+        document.getElementById('orderDate').min = localToday;
+        document.getElementById('orderDate').value = localToday;
+        syncFulfillmentFields();
         loadMenu();
     </script>
 </body>

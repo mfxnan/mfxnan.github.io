@@ -1203,7 +1203,7 @@
             outletWhatsApp: '6285725489277'
         };
 
-        const MENU_TABLE = 'menus';
+        const MENU_TABLE = 'menu_items';
         const supabaseClient = window.supabase?.createClient(CONFIG.supabaseUrl, CONFIG.supabasePublishableKey);
         const menuGrid = document.getElementById('menuGrid');
         const categoryList = document.getElementById('categoryList');
@@ -1483,8 +1483,8 @@
             menuGrid.innerHTML = '<div class="skeleton" aria-label="Memuat menu"></div>';
             const { data, error } = await supabaseClient
                 .from(MENU_TABLE)
-                .select('id, category, display_category, name, description, price, search_terms, active, sort_order')
-                .eq('active', true)
+                .select('id, category, name, description, price, image_url, is_available, sort_order')
+                .eq('is_available', true)
                 .order('sort_order', { ascending: true })
                 .order('name', { ascending: true });
             if (error) {

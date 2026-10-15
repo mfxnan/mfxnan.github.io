@@ -1006,7 +1006,7 @@
             outletWhatsApp: ''
         };
 
-        const MENU_TABLE = 'menu_items';
+        const MENU_TABLE = 'menus';
         const IMAGE_BUCKET = 'menu-images';
         const supabaseClient = window.supabase?.createClient(CONFIG.supabaseUrl, CONFIG.supabasePublishableKey);
         const menuGrid = document.getElementById('menuGrid');
@@ -1061,7 +1061,7 @@
             const query = document.getElementById('searchInput').value.trim().toLocaleLowerCase('id-ID');
             const filtered = menuItems.filter(item => {
                 const matchesCategory = activeCategory === 'Semua' || item.category === activeCategory;
-                const searchText = `${item.name} ${item.description || ''} ${item.category || ''}`.toLocaleLowerCase('id-ID');
+                const searchText = `${item.name || ''} ${item.description || ''} ${item.category || ''} ${item.search_terms || ''}`.toLocaleLowerCase('id-ID');
                 return matchesCategory && searchText.includes(query);
             });
             document.getElementById('resultCount').textContent = `${filtered.length} menu`;
@@ -1110,6 +1110,21 @@
             });
         }
 
+        function normalizeMenuItem(item) {
+            if (!item) return null;
+            return {
+                ...item,
+                name: String(item.name || '').trim(),
+                description: String(item.description || '').trim(),
+                category: String(item.display_category || item.category || 'Lainnya').trim() || 'Lainnya',
+                price: Number(item.price) || 0,
+                image_url: safeImageUrl(item.image_url || ''),
+                is_available: item.active !== undefined ? Boolean(item.active) : Boolean(item.is_available !== false),
+                search_terms: String(item.search_terms || '').trim(),
+                sort_order: Number(item.sort_order) || 0,
+            };
+        }
+
         async function loadMenu() {
             if (!supabaseClient) {
                 setConnection('Koneksi menu tidak tersedia', 'error');
@@ -1122,8 +1137,8 @@
             menuGrid.innerHTML = '<div class="skeleton" aria-label="Memuat menu"></div>';
             const { data, error } = await supabaseClient
                 .from(MENU_TABLE)
-                .select('id, name, description, category, price, image_url, is_available, sort_order')
-                .eq('is_available', true)
+                .select('id, category, display_category, name, description, price, search_terms, active, sort_order, image_url')
+                .eq('active', true)
                 .order('sort_order', { ascending: true })
                 .order('name', { ascending: true });
             if (error) {
@@ -1134,7 +1149,7 @@
                 showToast(`Menu belum dapat dimuat: ${error.message}`);
                 return;
             }
-            menuItems = data || [];
+            menuItems = (data || []).map(normalizeMenuItem).filter(Boolean);
             setConnection('Menu diperbarui langsung', 'online');
             renderCategories();
             renderMenu();
@@ -1178,7 +1193,7 @@
                 list.replaceChildren(makeElement('p', 'notice', `Tidak dapat memuat data: ${error.message}`));
                 return;
             }
-            adminItems = data || [];
+            adminItems = (data || []).map(normalizeMenuItem).filter(Boolean);
             list.replaceChildren();
             if (!adminItems.length) list.append(makeElement('div', 'admin-empty', 'Belum ada produk. Tambahkan menu pertama outlet.'));
             adminItems.forEach(item => {
@@ -1279,10 +1294,12 @@
                 const payload = {
                     name,
                     category,
+                    display_category: category,
                     price,
                     description: String(formData.get('description') || '').trim(),
                     image_url: imageUrl || null,
-                    is_available: formData.get('is_available') === 'on',
+                    active: formData.get('is_available') === 'on',
+                    search_terms: `${name} ${category} ${String(formData.get('description') || '').trim()}`.trim(),
                     sort_order: Number(formData.get('sort_order')) || 0
                 };
                 const query = editingId

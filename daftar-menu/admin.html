@@ -180,19 +180,7 @@
         </div>
     </header>
     <main class="wrap">
-        <div class="panel">
-            <strong>Konfigurasi Supabase</strong>
-            <p class="muted">Isi Project URL dan Publishable key dari Supabase. Kunci publishable memang boleh di
-                browser; jangan pernah masukkan secret/service_role key di sini.</p>
-            <label for="projectUrl">Supabase Project URL</label><input id="projectUrl"
-                placeholder="https://xxxx.supabase.co" autocomplete="url">
-            <label for="publishableKey">Publishable key</label><input id="publishableKey"
-                placeholder="sb_publishable_..." autocomplete="off">
-            <div class="actions"><button id="connectBtn">Hubungkan</button><button id="forgetBtn"
-                    class="secondary">Hapus konfigurasi dari browser ini</button></div>
-            <div id="configStatus" class="status">Belum terhubung.</div>
-        </div>
-        <div id="authPanel" class="panel hidden">
+        <div id="authPanel" class="panel">
             <strong>Login admin</strong>
             <div class="row">
                 <div><label for="email">Email admin</label><input id="email" type="email" autocomplete="username"></div>
@@ -271,23 +259,22 @@
     <script>
         (() => {
             const $ = id => document.getElementById(id);
-            let client = null, menu = [];
+            const SUPABASE_URL = 'https://ulpckwlazrnhxvjthlgh.supabase.co';
+            const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_sxy7RSWC7Lo5ggQyPTvjRA_fH_xdsLJ';
+            const client = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+                auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+            });
+            let menu = [];
             const fmt = n => 'Rp' + Number(n).toLocaleString('id-ID');
             const msg = (id, text) => $(id).textContent = text;
             const show = (id, yes = true) => $(id).classList.toggle('hidden', !yes);
-            function savedConfig() { return { url: localStorage.getItem('rcsb_url') || '', key: localStorage.getItem('rcsb_key') || '' }; }
-            function loadConfig() { const c = savedConfig(); $('projectUrl').value = c.url; $('publishableKey').value = c.key; if (c.url && c.key) connect(); }
-            async function connect() {
-                const url = $('projectUrl').value.trim(), key = $('publishableKey').value.trim();
-                if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url) || !key) { msg('configStatus', 'Isi Project URL dan publishable key yang benar.'); return; }
-                if (!window.supabase) { msg('configStatus', 'Library Supabase gagal dimuat. Periksa koneksi internet.'); return; }
-                localStorage.setItem('rcsb_url', url); localStorage.setItem('rcsb_key', key);
-                client = window.supabase.createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
-                msg('configStatus', 'Terhubung ke project Supabase. Memeriksa sesi...');
-                show('authPanel', true);
+            async function initAuth() {
+                if (!client) { msg('authStatus', 'Library Supabase gagal dimuat. Periksa koneksi internet.'); return; }
+                msg('authStatus', 'Memeriksa sesi admin...');
                 const { data, error } = await client.auth.getSession();
                 if (error) { msg('authStatus', 'Gagal membaca sesi: ' + error.message); return; }
-                if (data.session) await afterLogin(); else { show('editorPanel', false); show('listPanel', false); msg('authStatus', 'Belum login. Masukkan email dan password admin.'); }
+                if (data.session) await afterLogin();
+                else { show('editorPanel', false); show('listPanel', false); msg('authStatus', 'Masukkan email dan password admin Supabase.'); }
             }
             async function afterLogin() {
                 const { data, error } = await client.auth.getUser();
@@ -367,16 +354,15 @@
                 const blob = new Blob([JSON.stringify(menu, null, 2)], { type: 'application/json' });
                 const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'rc-ks-tubun-menu-backup.json'; a.click(); URL.revokeObjectURL(a.href);
             }
-            $('connectBtn').onclick = connect; $('loginBtn').onclick = login; $('logoutBtn').onclick = logout;
+            $('loginBtn').onclick = login; $('logoutBtn').onclick = logout;
             $('refreshBtn').onclick = refresh; $('saveBtn').onclick = save; $('clearBtn').onclick = clearForm;
             $('filter').oninput = renderList; $('exportBtn').onclick = exportJson;
-            $('forgetBtn').onclick = () => { localStorage.removeItem('rcsb_url'); localStorage.removeItem('rcsb_key'); client = null; $('projectUrl').value = ''; $('publishableKey').value = ''; msg('configStatus', 'Konfigurasi di browser ini dihapus.'); };
             document.addEventListener('keydown', (event) => {
                 if ((event.ctrlKey || event.metaKey) && ['+', '=', '-', '_', '0'].includes(event.key)) {
                     event.preventDefault();
                 }
             });
-            loadConfig();
+            initAuth();
         })();
     </script>
 </body>

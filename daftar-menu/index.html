@@ -1079,7 +1079,7 @@
             <a class="brand" href="#top" aria-label="Rocket Chicken KS Tubun, beranda">
                 <span class="brand-mark" aria-hidden="true">RC</span>
                 <span><span class="brand-name">ROCKET CHICKEN</span>
-                <span class="brand-location">Outlet Ks Tubun-Rejasari-Purwokerto</span></span>
+                    <span class="brand-location">Outlet Ks Tubun-Rejasari-Purwokerto</span></span>
             </a>
             <nav class="header-actions" aria-label="Navigasi utama">
                 <a class="text-link" href="#menu">Menu</a>
@@ -1236,10 +1236,32 @@
 
         function renderCategories() {
             const categories = [...new Set(menuItems.map(item => item.category).filter(Boolean))];
+            const categoryOrder = [
+                'Paket Promo',
+                'Paket Catering',
+                'Paket Segar',
+                'Lainnya',
+                'Chicken Produk',
+                'Paket Bucket',
+                'Ayam Utuh',
+                'Paket Rocket',
+                'Paket Sehat',
+                'Paket Roma',
+                'Paket Geprek',
+                'Paket Geprek Kosek',
+                'Paket Geprek Matah',
+                'Paket Geprek Terasi',
+                'Paket Hot Cheesy',
+                'Minuman'
+            ];
+            const categoryRanks = new Map(categoryOrder.map((category, index) => [category, index]));
             categories.sort((first, second) => {
-                if (first === 'Paket Promo') return -1;
-                if (second === 'Paket Promo') return 1;
-                return 0;
+                const firstRank = categoryRanks.get(first);
+                const secondRank = categoryRanks.get(second);
+                if (firstRank !== undefined && secondRank !== undefined) return firstRank - secondRank;
+                if (firstRank !== undefined) return -1;
+                if (secondRank !== undefined) return 1;
+                return first.localeCompare(second, 'id', { sensitivity: 'base' });
             });
             if (!categories.includes(activeCategory)) activeCategory = categories[0] || '';
             categoryList.replaceChildren();
@@ -1263,6 +1285,18 @@
                 const searchText = `${item.name || ''} ${item.description || ''} ${item.category || ''} ${item.search_terms || ''}`.toLocaleLowerCase('id-ID');
                 return matchesCategory && searchText.includes(query);
             });
+            if (['Paket Geprek', 'Chicken Produk'].includes(activeCategory)) {
+                const itemRank = item => {
+                    const name = (item.name || '').toLocaleLowerCase('id-ID');
+                    const packageNumber = name.match(/\b(?:paket|geprek)\s*(?:no\.?\s*)?([1-3])\b/);
+                    if (packageNumber) return Number(packageNumber[1]) - 1;
+                    if (/\bsayap\b/.test(name)) return 3;
+                    if (/\bpaha\s*bawah\b/.test(name)) return 4;
+                    if (/\bdada\b|\bpaha\s*atas\b/.test(name)) return 5;
+                    return 6;
+                };
+                filtered.sort((first, second) => itemRank(first) - itemRank(second));
+            }
             document.getElementById('resultCount').textContent = `${filtered.length} menu`;
             menuGrid.replaceChildren();
 
@@ -1499,7 +1533,7 @@
                 .select('*')
                 .eq('active', true)
                 .order('sort_order', { ascending: true })
-                .order('name', { ascending: true });
+                .order('id', { ascending: true });
             if (error) {
                 setConnection('Gagal memuat menu', 'error');
                 menuItems = [];

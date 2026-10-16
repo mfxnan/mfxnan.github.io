@@ -1,45 +1,57 @@
 # Rocket Chicken KS Tubun
 
-Katalog ini memakai halaman statis, Supabase Database, Supabase Auth, dan Supabase Storage. URL project dan publishable key sudah diatur di `index.html`. Publishable key memang digunakan di browser; jangan pernah memasukkan `service_role` key ke file frontend.
+Katalog ini menggunakan halaman statis, Supabase Database, Supabase Auth, dan Supabase Storage. Halaman katalog dan admin memakai tabel `public.menus`. URL project dan publishable key sudah diatur di `index.html` dan `admin.html`. Publishable key memang digunakan di browser; jangan pernah memasukkan `service_role` key ke file frontend.
 
 ## 1. Siapkan Supabase
 
-1. Buka project `ulpckwlazrnhxvjthlgh` di Supabase.
-2. Buka **SQL Editor**, buat query baru, lalu jalankan seluruh SQL di bawah.
-3. Buka **Authentication > Users**, buat akun untuk admin outlet, dan verifikasi emailnya.
-4. Ganti alamat pada query promosi admin di langkah 2 dengan email akun tersebut, lalu jalankan query itu secara terpisah.
-5. Pada **Authentication > URL Configuration**, tambahkan URL situs yang akan dipakai ke **Site URL** dan **Redirect URLs**.
+1. Buka project Supabase yang URL-nya digunakan di `index.html` dan `admin.html`.
+2. Buka **SQL Editor**, buat query baru, lalu jalankan SQL setup di bawah.
+3. Buka **Authentication > Users**, buat akun admin dan verifikasi emailnya.
+4. Berikan hak admin dengan SQL pada bagian **Beri hak admin** di bawah.
+5. Di **Authentication > URL Configuration**, masukkan URL situs ke **Site URL** dan **Redirect URLs**.
 
-### Skema, RLS, dan bucket foto
+### Tabel, akses, dan penyimpanan foto
+
+SQL ini membuat tabel yang dipakai kode saat ini, yaitu `menus`, bukan tabel lama `menu_items`. Jika tabel `menus` sudah ada, SQL menambahkan kolom pendukung yang belum tersedia. Kolom inti `id`, `name`, `category`, dan `price` harus sudah ada.
 
 ```sql
 create extension if not exists pgcrypto;
 
-create table if not exists public.menu_items (
+create table if not exists public.menus (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   description text not null default '',
   category text not null,
+  display_category text,
   price integer not null check (price >= 0),
   image_url text,
-  is_available boolean not null default true,
+  active boolean not null default true,
+  search_terms text not null default '',
   sort_order integer not null default 0,
-  created_at timestamptz not null default now()
+  updated_at timestamptz not null default now()
 );
 
-create index if not exists menu_items_public_order_idx
-  on public.menu_items (is_available, sort_order, name);
+alter table public.menus add column if not exists description text not null default '';
+alter table public.menus add column if not exists display_category text;
+alter table public.menus add column if not exists image_url text;
+alter table public.menus add column if not exists active boolean not null default true;
+alter table public.menus add column if not exists search_terms text not null default '';
+alter table public.menus add column if not exists sort_order integer not null default 0;
+alter table public.menus add column if not exists updated_at timestamptz not null default now();
+
+create index if not exists menus_public_order_idx
+  on public.menus (active, sort_order, name);
 
 create table if not exists public.menu_admins (
   user_id uuid primary key references auth.users(id) on delete cascade
 );
 
-alter table public.menu_items enable row level security;
+alter table public.menus enable row level security;
 alter table public.menu_admins enable row level security;
 
-revoke all on public.menu_items from anon, authenticated;
-grant select on public.menu_items to anon, authenticated;
-grant insert, update, delete on public.menu_items to authenticated;
+revoke all on public.menus from anon, authenticated;
+grant select on public.menus to anon, authenticated;
+grant insert, update on public.menus to authenticated;
 revoke all on public.menu_admins from anon, authenticated;
 grant select on public.menu_admins to authenticated;
 
@@ -60,26 +72,21 @@ $$;
 revoke all on function public.is_menu_admin() from public;
 grant execute on function public.is_menu_admin() to anon, authenticated;
 
-drop policy if exists "Public can read available menu" on public.menu_items;
-create policy "Public can read available menu"
-  on public.menu_items for select to anon, authenticated
-  using (is_available or (select public.is_menu_admin()));
+drop policy if exists "Public can read active menus" on public.menus;
+create policy "Public can read active menus"
+  on public.menus for select to anon, authenticated
+  using (active or (select public.is_menu_admin()));
 
-drop policy if exists "Admins can add menu" on public.menu_items;
-create policy "Admins can add menu"
-  on public.menu_items for insert to authenticated
+drop policy if exists "Admins can add menus" on public.menus;
+create policy "Admins can add menus"
+  on public.menus for insert to authenticated
   with check ((select public.is_menu_admin()));
 
-drop policy if exists "Admins can update menu" on public.menu_items;
-create policy "Admins can update menu"
-  on public.menu_items for update to authenticated
+drop policy if exists "Admins can update menus" on public.menus;
+create policy "Admins can update menus"
+  on public.menus for update to authenticated
   using ((select public.is_menu_admin()))
   with check ((select public.is_menu_admin()));
-
-drop policy if exists "Admins can delete menu" on public.menu_items;
-create policy "Admins can delete menu"
-  on public.menu_items for delete to authenticated
-  using ((select public.is_menu_admin()));
 
 drop policy if exists "Admins can read own admin record" on public.menu_admins;
 create policy "Admins can read own admin record"
@@ -123,7 +130,7 @@ create policy "Admins can delete menu photos"
 
 ### Beri hak admin
 
-Setelah akun dibuat di Supabase Auth, ganti email contoh ini dan jalankan di SQL Editor. Hanya akun yang ada di `menu_admins` yang dapat mengubah data atau mengunggah foto.
+Setelah akun dibuat di Supabase Auth, ganti email contoh lalu jalankan query ini. Hanya akun yang terdaftar di `menu_admins` yang dapat menambah atau mengubah menu dan mengelola foto di Storage.
 
 ```sql
 insert into public.menu_admins (user_id)
@@ -131,23 +138,35 @@ select id from auth.users where email = lower('admin@outlet.example')
 on conflict (user_id) do nothing;
 ```
 
+### Mengganti foto menu
+
+Panel `admin.html` saat ini belum menyediakan unggah atau edit foto. Untuk mengganti foto secara manual:
+
+1. Di Supabase, buka **Storage > menu-images**, lalu unggah gambar berformat JPG, PNG, WebP, atau GIF dengan ukuran maksimal 5 MB.
+2. Buka detail file dan salin **Public URL**.
+3. Buka **Table Editor > menus**, cari baris menu yang ingin diubah, lalu tempel URL ke kolom `image_url` dan simpan.
+4. Muat ulang halaman katalog untuk memeriksa foto. Kosongkan `image_url` bila ingin memakai tampilan foto bawaan.
+
+URL harus dapat diakses publik melalui HTTP/HTTPS. Perubahan nama, harga, kategori, dan status aktif tetap dilakukan melalui halaman admin di `/daftar-menu/admin.html`.
+
 ## 2. Atur kontak outlet
 
-Di `index.html`, isi `outletWhatsApp` dengan nomor WhatsApp outlet dalam format internasional tanpa `+`, spasi, atau tanda baca. Contoh format: `62` diikuti nomor outlet. Sampai nomor itu diisi, tombol chat akan memberi tahu bahwa kontak belum dikonfigurasi.
+Nilai `outletWhatsApp` di `index.html` saat ini sudah diisi. Jika nomor berubah, gunakan format internasional tanpa `+`, spasi, atau tanda baca; contoh: `62` diikuti nomor outlet.
 
 ## 3. Deploy ke GitHub Pages
 
-1. Pastikan `daftar-menu/index.html` dan file ini sudah masuk ke branch yang akan dipublikasikan.
+1. Pastikan perubahan `daftar-menu/index.html`, `daftar-menu/admin.html`, dan panduan ini sudah masuk ke branch yang akan dipublikasikan.
 2. Di GitHub, buka repository **Settings > Pages**.
 3. Pada **Build and deployment**, pilih **Deploy from a branch**, pilih branch publikasi (umumnya `main`) dan folder `/ (root)`, lalu simpan.
-4. Setelah deployment selesai, halaman tersedia di `https://mfxnan.github.io/daftar-menu/`.
-5. Tambahkan URL tersebut ke **Site URL** dan **Redirect URLs** Supabase. Jika repository memakai custom domain atau nama owner berbeda, gunakan URL GitHub Pages yang tampil di Settings.
+4. Setelah deployment selesai, katalog tersedia di `https://mfxnan.github.io/daftar-menu/` dan panel admin di `https://mfxnan.github.io/daftar-menu/admin.html`.
+5. Masukkan kedua URL tersebut ke **Redirect URLs** Supabase. Gunakan URL katalog sebagai **Site URL**. Jika memakai custom domain atau nama owner berbeda, sesuaikan dengan URL yang tampil di Settings.
 
 ## 4. Verifikasi
 
-1. Buka URL halaman dan pastikan status katalog menunjukkan menu sudah terhubung.
-2. Masuk lewat tombol **Admin**, lalu tambahkan produk dengan nama, kategori, harga, dan foto.
-3. Pastikan produk tampil di katalog publik. Uji edit harga, sembunyikan/tampilkan produk, ganti foto, dan hapus produk.
-4. Uji pencarian, kategori, tampilan ponsel, dan tombol WhatsApp setelah nomor outlet diatur.
+1. Buka URL katalog dan pastikan status menunjukkan menu berhasil dimuat.
+2. Buka URL admin, login dengan akun yang UID-nya sudah terdaftar di `menu_admins`, lalu pastikan daftar menu tampil.
+3. Uji tambah/edit menu dan aktifkan/nonaktifkan menu. Panel admin tidak memiliki aksi hapus.
+4. Untuk foto, ikuti prosedur **Mengganti foto menu**, lalu pastikan foto tampil pada kartu menu publik.
+5. Uji pencarian, kategori, tampilan ponsel, dan tombol WhatsApp.
 
-Jika katalog melaporkan error saat dibuka, periksa bahwa SQL telah dijalankan, project Supabase aktif, serta URL dan publishable key di `index.html` benar. Jangan menyelesaikan masalah dengan menonaktifkan RLS atau mengekspos secret key.
+Jika katalog atau panel admin melaporkan error, periksa project Supabase, nama/kolom tabel `menus`, kebijakan RLS, akun admin, serta URL dan publishable key di kedua file HTML. Jangan menonaktifkan RLS atau mengekspos `service_role` key untuk mengatasi error.

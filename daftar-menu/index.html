@@ -1210,7 +1210,7 @@
         const statusLabel = document.getElementById('connectionStatus');
         const rupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
         let menuItems = [];
-        let activeCategory = 'Semua';
+        let activeCategory = '';
         let toastTimeout;
         const cart = new Map();
 
@@ -1235,8 +1235,13 @@
         }
 
         function renderCategories() {
-            const categories = ['Semua', ...new Set(menuItems.map(item => item.category).filter(Boolean))];
-            if (!categories.includes(activeCategory)) activeCategory = 'Semua';
+            const categories = [...new Set(menuItems.map(item => item.category).filter(Boolean))];
+            categories.sort((first, second) => {
+                if (first === 'Paket Promo') return -1;
+                if (second === 'Paket Promo') return 1;
+                return 0;
+            });
+            if (!categories.includes(activeCategory)) activeCategory = categories[0] || '';
             categoryList.replaceChildren();
             categories.forEach(category => {
                 const button = makeElement('button', `category-button${activeCategory === category ? ' active' : ''}`, category);
@@ -1254,7 +1259,7 @@
         function renderMenu() {
             const query = document.getElementById('searchInput').value.trim().toLocaleLowerCase('id-ID');
             const filtered = menuItems.filter(item => {
-                const matchesCategory = activeCategory === 'Semua' || item.category === activeCategory;
+                const matchesCategory = item.category === activeCategory;
                 const searchText = `${item.name || ''} ${item.description || ''} ${item.category || ''} ${item.search_terms || ''}`.toLocaleLowerCase('id-ID');
                 return matchesCategory && searchText.includes(query);
             });
@@ -1457,11 +1462,19 @@
 
         function normalizeMenuItem(item) {
             if (!item) return null;
+            const categorySource = `${item.name || ''} ${item.description || ''} ${item.display_category || ''} ${item.category || ''}`.trim();
+            const normalizedCategorySource = categorySource.toLocaleLowerCase('id-ID');
+            let category = String(item.display_category || item.category || 'Lainnya').trim() || 'Lainnya';
+            if (/geprek/.test(normalizedCategorySource)) {
+                if (/kosek|bawang/.test(normalizedCategorySource)) category = 'Paket Geprek Kosek';
+                else if (/matah/.test(normalizedCategorySource)) category = 'Paket Geprek Matah';
+                else if (/terasi/.test(normalizedCategorySource)) category = 'Paket Geprek Terasi';
+            }
             return {
                 ...item,
                 name: String(item.name || '').trim(),
                 description: String(item.description || '').trim(),
-                category: String(item.display_category || item.category || 'Lainnya').trim() || 'Lainnya',
+                category,
                 price: Number(item.price) || 0,
                 image_url: safeImageUrl(item.image_url || ''),
                 is_available: item.active !== undefined ? Boolean(item.active) : Boolean(item.is_available !== false),

@@ -140,14 +140,14 @@ on conflict (user_id) do nothing;
 
 ### Mengganti foto menu
 
-Panel `admin.html` saat ini belum menyediakan unggah atau edit foto. Untuk mengganti foto secara manual:
+Panel admin menerima URL gambar publik saat menambah atau mengedit menu. Kolom ini opsional; biarkan kosong jika menu belum memiliki foto.
 
-1. Di Supabase, buka **Storage > menu-images**, lalu unggah gambar berformat JPG, PNG, WebP, atau GIF dengan ukuran maksimal 5 MB.
-2. Buka detail file dan salin **Public URL**.
-3. Buka **Table Editor > menus**, cari baris menu yang ingin diubah, lalu tempel URL ke kolom `image_url` dan simpan.
-4. Muat ulang halaman katalog untuk memeriksa foto. Kosongkan `image_url` bila ingin memakai tampilan foto bawaan.
+1. Siapkan URL langsung ke gambar dari host publik. Gambar bisa disimpan di repo, misalnya `https://mfxnan.github.io/daftar-menu/asset/img/nama-menu.jpg`, atau diunggah ke **Storage > menu-images** di Supabase lalu salin **Public URL**. Bucket Supabase menerima JPG, PNG, WebP, atau GIF hingga 5 MB.
+2. Buka `/daftar-menu/admin.html`, login, lalu tambah menu atau klik **Edit** pada menu yang fotonya ingin diganti.
+3. Tempel URL pada **URL gambar (opsional)**, lalu klik **Simpan menu** atau **Simpan perubahan**.
+4. Muat ulang katalog untuk memeriksa hasilnya. Kosongkan URL saat mengedit menu dan simpan untuk menghapus gambar dari kartu menu.
 
-URL harus dapat diakses publik melalui HTTP/HTTPS. Perubahan nama, harga, kategori, dan status aktif tetap dilakukan melalui halaman admin di `/daftar-menu/admin.html`.
+URL harus dapat diakses publik melalui HTTP/HTTPS dan langsung menuju file gambar, bukan halaman berbagi. Rasio yang disarankan adalah `1,35:1` (contoh `1350 × 1000` piksel); gambar lain tetap bisa dipakai, tetapi akan dipotong agar sesuai kartu menu.
 
 ## 2. Atur kontak outlet
 
@@ -165,8 +165,8 @@ Nilai `outletWhatsApp` di `index.html` saat ini sudah diisi. Jika nomor berubah,
 
 1. Buka URL katalog dan pastikan status menunjukkan menu berhasil dimuat.
 2. Buka URL admin, login dengan akun yang UID-nya sudah terdaftar di `menu_admins`, lalu pastikan daftar menu tampil.
-3. Uji tambah/edit menu dan aktifkan/nonaktifkan menu. Panel admin tidak memiliki aksi hapus.
-4. Untuk foto, ikuti prosedur **Mengganti foto menu**, lalu pastikan foto tampil pada kartu menu publik.
+3. Uji tambah/edit menu dengan URL gambar kosong dan terisi, serta aktifkan/nonaktifkan menu. Panel admin tidak memiliki aksi hapus.
+4. Pastikan foto tampil pada kartu menu publik setelah menyimpan URL gambar.
 5. Uji pencarian, kategori, tampilan ponsel, dan tombol WhatsApp.
 
 Jika katalog atau panel admin melaporkan error, periksa project Supabase, nama/kolom tabel `menus`, kebijakan RLS, akun admin, serta URL dan publishable key di kedua file HTML. Jangan menonaktifkan RLS atau mengekspos `service_role` key untuk mengatasi error.

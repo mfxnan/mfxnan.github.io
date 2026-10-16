@@ -220,6 +220,10 @@
                         maxlength="120"></div>
             </div>
             <label for="description">Deskripsi</label><input id="description" maxlength="300">
+            <label for="imageUrl">URL gambar (opsional)</label><input id="imageUrl" type="url" maxlength="2048"
+                placeholder="https://...">
+            <p class="muted">Gunakan URL gambar publik. Rasio yang disarankan 1,35:1, misalnya 1350 × 1000 piksel.
+                Gambar akan dipotong otomatis agar sesuai kartu menu.</p>
             <div class="row">
                 <div><label for="price">Harga (Rp)</label><input id="price" type="number" min="0" step="500" required>
                 </div>
@@ -320,15 +324,26 @@
                 $('category').value = x.display_category || x.category;
                 $('sourceCategory').value = x.category || '';
                 $('description').value = x.description || '';
+                $('imageUrl').value = x.image_url || '';
                 $('price').value = x.price;
                 $('searchTerms').value = x.search_terms || '';
                 $('saveBtn').textContent = 'Simpan perubahan';
                 window.scrollTo({ top: $('editorPanel').offsetTop, behavior: 'smooth' });
             }
-            function clearForm() { $('itemId').value = ''; $('name').value = ''; $('sourceCategory').value = ''; $('description').value = ''; $('price').value = ''; $('searchTerms').value = ''; $('saveBtn').textContent = 'Simpan menu'; msg('saveStatus', 'Form dikosongkan.'); }
+            function clearForm() { $('itemId').value = ''; $('name').value = ''; $('sourceCategory').value = ''; $('description').value = ''; $('imageUrl').value = ''; $('price').value = ''; $('searchTerms').value = ''; $('saveBtn').textContent = 'Simpan menu'; msg('saveStatus', 'Form dikosongkan.'); }
             async function save() {
                 const name = $('name').value.trim(), price = Number($('price').value), category = $('category').value;
                 if (!name || $('price').value === '' || !Number.isSafeInteger(price) || price < 0) { msg('saveStatus', 'Nama wajib diisi dan harga harus bilangan bulat nol atau lebih.'); return; }
+                const imageUrl = $('imageUrl').value.trim();
+                if (imageUrl) {
+                    try {
+                        const parsedImageUrl = new URL(imageUrl);
+                        if (!['http:', 'https:'].includes(parsedImageUrl.protocol)) throw new Error();
+                    } catch {
+                        msg('saveStatus', 'URL gambar harus berupa alamat publik HTTP atau HTTPS yang valid.');
+                        return;
+                    }
+                }
                 const displayCategory = category;
                 const payload = {
                     name,
@@ -336,6 +351,7 @@
                     category: $('sourceCategory').value.trim() || displayCategory,
                     display_category: displayCategory,
                     description: $('description').value.trim(),
+                    image_url: imageUrl || null,
                     search_terms: $('searchTerms').value.trim(),
                     active: true,
                     updated_at: new Date().toISOString()

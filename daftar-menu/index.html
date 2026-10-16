@@ -1078,8 +1078,8 @@
         <header class="site-header">
             <a class="brand" href="#top" aria-label="Rocket Chicken KS Tubun, beranda">
                 <span class="brand-mark" aria-hidden="true">RC</span>
-                <span><span class="brand-name">ROCKET CHICKEN</span><span class="brand-location">Outlet KS
-                        Tubun</span></span>
+                <span><span class="brand-name">ROCKET CHICKEN</span>
+                <span class="brand-location">Outlet Ks Tubun-Rejasari-Purwokerto</span></span>
             </a>
             <nav class="header-actions" aria-label="Navigasi utama">
                 <a class="text-link" href="#menu">Menu</a>
@@ -1428,34 +1428,34 @@
             const deliveryAddress = isDelivery ? String(form.get('delivery_address')).trim() : '-';
             const note = String(form.get('order_note')).trim() || '-';
             const message = [
-                'Halo Rocket Chicken KS Tubun 👋🏻',
+                'Halo Rocket Chicken KS Tubun',
                 '',
                 'Saya ingin melakukan pemesanan dengan rincian berikut:',
                 '',
-                '👤 DATA PEMESAN',
+                'DATA PEMESAN',
                 `Nama: ${String(form.get('customer_name')).trim()}`,
                 `No. HP: ${customerPhone}`,
                 `Alamat: ${String(form.get('customer_address')).trim()}`,
                 '',
-                '🍗 DETAIL PESANAN',
+                'DETAIL PESANAN',
                 ...orderLines,
                 '',
-                '💰 TOTAL PEMESANAN',
+                'TOTAL PEMESANAN',
                 `Total: ${rupiah.format(subtotal)}`,
                 `DP: ${rupiah.format(downPayment)}`,
                 `Sisa pembayaran: ${rupiah.format(subtotal - downPayment)}`,
                 '',
-                '📅 JADWAL PESANAN',
+                'JADWAL PESANAN',
                 `Tanggal pesanan: ${date}`,
                 `Jam pesanan: ${form.get('order_time')}`,
                 '',
-                '📍 PENGAMBILAN/PENGANTARAN',
+                'PENGAMBILAN/PENGANTARAN',
                 `Metode: ${fulfillment}`,
                 `Alamat pengantaran: ${deliveryAddress}`,
                 ...(isDelivery ? ['Ongkir: dibahas melalui WhatsApp'] : []),
                 `Catatan tambahan: ${note}`,
                 '',
-                'Terima kasih. 🙏🏻'
+                'Terima kasih.'
             ].join('\n');
             window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
         }

@@ -210,15 +210,23 @@
             <input id="itemId" type="hidden">
             <div class="row">
                 <div><label for="name">Nama menu</label><input id="name" maxlength="120" required></div>
-                <div><label for="category">Kategori</label><select id="category">
-                        <option value="paket">Paket</option>
-                        <option value="chicken">Chicken Product</option>
-                        <option value="steak">Chicken Steak</option>
-                        <option value="bucket">Bucket</option>
-                        <option value="lainnya">Menu Lainnya</option>
-                        <option value="minuman">Minuman</option>
-                        <option value="promo">Promo</option>
+                <div><label for="category">Kategori tampilan</label><select id="category">
+                        <option>Paket Promo</option>
+                        <option>Paket Catering</option>
+                        <option>Paket Segar</option>
+                        <option>Lainnya</option>
+                        <option>Chicken Produk</option>
+                        <option>Paket Bucket</option>
+                        <option>Ayam Utuh</option>
+                        <option>Paket Rocket</option>
+                        <option>Paket Sehat</option>
+                        <option>Paket Roma</option>
+                        <option>Paket Geprek</option>
+                        <option>Paket Hot Cheesy</option>
+                        <option>Minuman</option>
                     </select></div>
+                <div><label for="sourceCategory">Kategori sumber (opsional)</label><input id="sourceCategory"
+                        maxlength="120"></div>
             </div>
             <label for="description">Deskripsi</label><input id="description" maxlength="300">
             <div class="row">
@@ -298,39 +306,61 @@
             async function refresh() {
                 if (!client) return;
                 msg('listStatus', 'Memuat menu...');
-                const { data, error } = await client.from('menu_items').select('*').order('category').order('name');
+                const { data, error } = await client.from('menus').select('*').order('sort_order', { ascending: true }).order('name');
                 if (error) { msg('listStatus', 'Gagal membaca menu: ' + error.message + '\\nPeriksa SQL, RLS, dan koneksi.'); return; }
                 menu = data || []; renderList(); msg('listStatus', 'Berhasil memuat ' + menu.length + ' baris menu.');
             }
             function renderList() {
                 const q = $('filter').value.toLocaleLowerCase('id-ID').trim();
                 const rows = $('rows'); rows.replaceChildren();
-                menu.filter(x => (x.name + ' ' + x.category + ' ' + x.description).toLocaleLowerCase('id-ID').includes(q)).forEach(x => {
+                menu.filter(x => (x.name + ' ' + (x.display_category || x.category) + ' ' + x.description).toLocaleLowerCase('id-ID').includes(q)).forEach(x => {
                     const tr = document.createElement('tr');
                     const td1 = document.createElement('td'); td1.textContent = x.name + '\\n' + x.description;
-                    const td2 = document.createElement('td'); td2.textContent = x.category;
+                    const td2 = document.createElement('td'); td2.textContent = x.display_category || x.category;
                     const td3 = document.createElement('td'); td3.textContent = fmt(x.price);
                     const td4 = document.createElement('td'); td4.textContent = x.updated_at ? new Date(x.updated_at).toLocaleString('id-ID') : '—';
                     const td5 = document.createElement('td'); const edit = document.createElement('button'); edit.textContent = 'Edit'; edit.onclick = () => editItem(x);
-                    const del = document.createElement('button'); del.textContent = 'Nonaktifkan'; del.className = 'danger'; del.style.marginLeft = '5px'; del.onclick = () => deactivate(x);
+                    const del = document.createElement('button'); del.textContent = x.active ? 'Nonaktifkan' : 'Aktifkan'; del.className = x.active ? 'danger' : 'secondary'; del.style.marginLeft = '5px'; del.onclick = () => toggleActive(x);
                     td5.append(edit, del); tr.append(td1, td2, td3, td4, td5); rows.append(tr);
                 });
             }
-            function editItem(x) { $('itemId').value = x.id; $('name').value = x.name; $('category').value = x.category; $('description').value = x.description || ''; $('price').value = x.price; $('searchTerms').value = x.search_terms || ''; $('saveBtn').textContent = 'Simpan perubahan'; window.scrollTo({ top: $('editorPanel').offsetTop, behavior: 'smooth' }); }
-            function clearForm() { $('itemId').value = ''; $('name').value = ''; $('description').value = ''; $('price').value = ''; $('searchTerms').value = ''; $('saveBtn').textContent = 'Simpan menu'; msg('saveStatus', 'Form dikosongkan.'); }
+            function editItem(x) {
+                $('itemId').value = x.id;
+                $('name').value = x.name;
+                $('category').value = x.display_category || x.category;
+                $('sourceCategory').value = x.category || '';
+                $('description').value = x.description || '';
+                $('price').value = x.price;
+                $('searchTerms').value = x.search_terms || '';
+                $('saveBtn').textContent = 'Simpan perubahan';
+                window.scrollTo({ top: $('editorPanel').offsetTop, behavior: 'smooth' });
+            }
+            function clearForm() { $('itemId').value = ''; $('name').value = ''; $('sourceCategory').value = ''; $('description').value = ''; $('price').value = ''; $('searchTerms').value = ''; $('saveBtn').textContent = 'Simpan menu'; msg('saveStatus', 'Form dikosongkan.'); }
             async function save() {
                 const name = $('name').value.trim(), price = Number($('price').value), category = $('category').value;
                 if (!name || $('price').value === '' || !Number.isSafeInteger(price) || price < 0) { msg('saveStatus', 'Nama wajib diisi dan harga harus bilangan bulat nol atau lebih.'); return; }
-                const payload = { name, price, category, description: $('description').value.trim(), search_terms: $('searchTerms').value.trim(), active: true };
+                const displayCategory = category;
+                const payload = {
+                    name,
+                    price,
+                    category: $('sourceCategory').value.trim() || displayCategory,
+                    display_category: displayCategory,
+                    description: $('description').value.trim(),
+                    search_terms: $('searchTerms').value.trim(),
+                    active: true,
+                    updated_at: new Date().toISOString()
+                };
                 const id = $('itemId').value; msg('saveStatus', 'Menyimpan...');
-                const result = id ? await client.from('menu_items').update(payload).eq('id', Number(id)).select().single() : await client.from('menu_items').upsert(payload, { onConflict: 'category,name' }).select().single();
+                const result = id ? await client.from('menus').update(payload).eq('id', id).select().single() : await client.from('menus').insert(payload).select().single();
                 if (result.error) { msg('saveStatus', 'Gagal menyimpan: ' + result.error.message); return; }
                 msg('saveStatus', 'Berhasil disimpan: ' + result.data.name + ' — ' + fmt(result.data.price));
                 clearForm(); await refresh();
             }
-            async function deactivate(x) {
-                if (!confirm('Nonaktifkan "' + x.name + '"? Data tetap tersimpan dan bisa dipulihkan lewat database.')) return;
-                const { error } = await client.from('menu_items').update({ active: false }).eq('id', x.id);
+            async function toggleActive(x) {
+                const nextActive = !x.active;
+                const action = nextActive ? 'aktifkan' : 'nonaktifkan';
+                if (!confirm(`${action[0].toUpperCase()}${action.slice(1)} "${x.name}"?`)) return;
+                const { error } = await client.from('menus').update({ active: nextActive, updated_at: new Date().toISOString() }).eq('id', x.id);
                 if (error) { msg('listStatus', 'Gagal: ' + error.message); return; } await refresh();
             }
             function exportJson() {

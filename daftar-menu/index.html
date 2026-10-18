@@ -10,6 +10,9 @@
     <meta property="og:url" content="https://mfxnan.github.io/daftar-menu/">
     <meta property="og:type" content="website">
     <title>Menu Rocket Chicken KS Tubun</title>
+    <link rel="icon"
+        href="https://firebasestorage.googleapis.com/v0/b/rocketchicken-v2/o/Assets%2Frc_logo_square.png?alt=media&amp;token=4d2c56f5-c57a-48a4-8989-31c356e5cb2e"
+        type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -902,6 +905,10 @@
         }
 
         @media (max-width: 620px) {
+            body.cart-active {
+                padding-bottom: calc(92px + env(safe-area-inset-bottom));
+            }
+
             .wrap {
                 width: min(100% - 28px, 480px);
             }
@@ -1045,15 +1052,25 @@
 
             .cart-dock {
                 right: 12px;
-                bottom: max(12px, env(safe-area-inset-bottom));
+                bottom: calc(10px + env(safe-area-inset-bottom));
                 width: calc(100% - 24px);
-                padding: 10px;
+                min-height: 62px;
+                padding: 9px 10px;
             }
 
             .cart-dock .button {
-                min-height: 38px;
+                min-height: 44px;
                 padding-inline: 11px;
                 font-size: 12px;
+            }
+
+            dialog {
+                width: 100%;
+                max-height: calc(100vh - 8px);
+                max-height: calc(100dvh - env(safe-area-inset-top) - 8px);
+                margin: auto 0 0;
+                overflow-y: auto;
+                border-radius: 10px 10px 0 0;
             }
 
             .fulfillment-options {
@@ -1066,6 +1083,24 @@
 
             .field.full {
                 grid-column: auto;
+            }
+
+            .quantity-control {
+                gap: 10px;
+            }
+
+            .quantity-control button {
+                width: 44px;
+                height: 44px;
+            }
+
+            .checkout-actions .button {
+                width: 100%;
+                min-height: 46px;
+            }
+
+            .dialog-shell {
+                padding-bottom: calc(18px + env(safe-area-inset-bottom));
             }
 
         }
@@ -1094,9 +1129,9 @@
                     <span class="brand-location">Outlet Ks Tubun-Rejasari-Purwokerto</span></span>
             </a>
             <nav class="header-actions" aria-label="Navigasi utama">
-<!--                <a class="text-link" href="#menu">Menu</a> -->
+                <!--                <a class="text-link" href="#menu">Menu</a> -->
                 <a class="button small" href="#kontak">Hubungi outlet</a>
-            </nav> 
+            </nav>
         </header>
 
         <main id="top">
@@ -1395,6 +1430,7 @@
         function updateCartDock() {
             const { count, subtotal } = getCartTotals();
             document.getElementById('cartDock').hidden = count === 0;
+            document.body.classList.toggle('cart-active', count > 0);
             document.getElementById('cartCount').textContent = `${count} item`;
             document.getElementById('cartSubtotal').textContent = rupiah.format(subtotal);
         }

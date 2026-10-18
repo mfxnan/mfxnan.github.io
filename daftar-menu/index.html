@@ -1074,7 +1074,20 @@
             }
 
             .fulfillment-options {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 6px;
+            }
+
+            .fulfillment-option {
+                min-height: 40px;
+                gap: 6px;
+                padding: 7px 8px;
+                font-size: 11px;
+            }
+
+            .fulfillment-option input {
+                flex: 0 0 auto;
+                margin: 0;
             }
 
             .form-grid {

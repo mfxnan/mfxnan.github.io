@@ -69,6 +69,17 @@ function renderCategories() {
     categoryCarousel?.destroy();
     categoryCarousel = null;
     categoryList.replaceChildren();
+    const selectCategory = category => {
+        if (!categories.includes(category)) return;
+        const changed = activeCategory !== category;
+        activeCategory = category;
+        categoryList.querySelectorAll('.category-button').forEach(categoryButton => {
+            const isActive = categoryButton.dataset.category === activeCategory;
+            categoryButton.classList.toggle('active', isActive);
+            categoryButton.setAttribute('aria-pressed', String(isActive));
+        });
+        if (changed) renderMenu();
+    };
     categories.forEach((category, index) => {
         const slide = makeElement('li', 'splide__slide');
         const button = makeElement('button', `category-button${activeCategory === category ? ' active' : ''}`, category);
@@ -76,14 +87,8 @@ function renderCategories() {
         button.dataset.category = category;
         button.setAttribute('aria-pressed', String(activeCategory === category));
         button.addEventListener('click', () => {
-            activeCategory = category;
-            categoryList.querySelectorAll('.category-button').forEach(categoryButton => {
-                const isActive = categoryButton.dataset.category === activeCategory;
-                categoryButton.classList.toggle('active', isActive);
-                categoryButton.setAttribute('aria-pressed', String(isActive));
-            });
             categoryCarousel?.go(index);
-            renderMenu();
+            selectCategory(category);
         });
         slide.append(button);
         categoryList.append(slide);
@@ -92,6 +97,9 @@ function renderCategories() {
         categoryCarousel = new window.Splide('#categoryCarousel', {
             type: 'slide',
             autoWidth: true,
+            start: categories.indexOf(activeCategory),
+            focus: 'center',
+            trimSpace: false,
             drag: true,
             arrows: false,
             pagination: false,
@@ -101,7 +109,9 @@ function renderCategories() {
                 850: { gap: '7px', padding: { left: '40px', right: '40px' } },
                 620: { gap: '6px', padding: { left: '16px', right: '16px' } }
             }
-        }).mount();
+        });
+        categoryCarousel.on('moved', index => selectCategory(categories[index]));
+        categoryCarousel.mount();
     }
 }
 

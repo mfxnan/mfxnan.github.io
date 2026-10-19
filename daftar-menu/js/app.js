@@ -95,7 +95,7 @@ function renderCategories() {
     });
     if (categories.length && window.Splide) {
         categoryCarousel = new window.Splide('#categoryCarousel', {
-            type: 'slide',
+            type: 'loop',
             autoWidth: true,
             start: categories.indexOf(activeCategory),
             focus: 'center',
@@ -104,10 +104,10 @@ function renderCategories() {
             arrows: false,
             pagination: false,
             gap: '8px',
-            padding: { left: '72px', right: '72px' },
+            padding: '5rem',
             breakpoints: {
-                850: { gap: '7px', padding: { left: '40px', right: '40px' } },
-                620: { gap: '6px', padding: { left: '16px', right: '16px' } }
+                850: { gap: '7px', padding: '40px' },
+                620: { gap: '6px', padding: '16px' }
             }
         });
         categoryCarousel.on('moved', index => selectCategory(categories[index]));

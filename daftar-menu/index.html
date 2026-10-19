@@ -92,55 +92,121 @@
         <button class="button" id="checkoutOpen" type="button">Lihat keranjang</button>
     </aside>
 
-    <dialog id="checkoutDialog" aria-labelledby="checkoutTitle">
-        <section class="dialog-shell">
-            <div class="dialog-top">
+    <dialog class="checkout-dialog" id="checkoutDialog" aria-labelledby="checkoutTitle">
+        <section class="dialog-shell checkout-shell">
+            <div class="dialog-top checkout-top">
                 <div>
                     <div class="section-kicker">Pesanan Anda</div>
                     <h2 id="checkoutTitle">Keranjang &amp; checkout</h2>
-                    <p>Periksa menu, jumlah, dan total sebelum lanjut ke WhatsApp.</p>
+                    <p>Periksa pesanan sebelum melanjutkan ke WhatsApp.</p>
                 </div>
-                <button class="icon-button" id="checkoutClose" type="button" aria-label="Tutup">×</button>
+                <button class="icon-button" id="checkoutClose" type="button" aria-label="Tutup keranjang">×</button>
             </div>
-            <div class="cart-lines" id="cartLines"></div>
-            <div class="cart-total-line"><strong>Total pemesanan</strong><strong id="checkoutSubtotal">Rp0</strong>
-            </div>
-            <p class="delivery-note">Jika memilih diantar, ongkir akan dibahas melalui WhatsApp.</p>
-            <form id="checkoutForm">
-                <div class="form-grid">
-                    <div class="field"><label for="customerName">Nama pemesan</label><input id="customerName"
-                            name="customer_name" autocomplete="name" maxlength="100" required></div>
-                    <div class="field"><label for="customerPhone">Nomor HP / WhatsApp</label><input id="customerPhone"
-                            name="customer_phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="24" required>
+            <form id="checkoutForm" class="checkout-form">
+                <div class="checkout-scroll">
+                    <div class="checkout-section-heading">
+                        <h3>Ringkasan pesanan</h3>
+                        <span>Harga dalam rupiah</span>
                     </div>
-                    <div class="field full"><label for="customerAddress">Alamat pemesan</label><textarea
-                            id="customerAddress" name="customer_address" autocomplete="street-address" maxlength="400"
-                            required></textarea></div>
-                    <div class="field full"><span class="field-label">Pesanan</span>
-                        <div class="fulfillment-options">
-                            <label class="fulfillment-option"><input type="radio" name="fulfillment" value="delivery"
-                                    checked> Diantar</label>
-                            <label class="fulfillment-option"><input type="radio" name="fulfillment" value="pickup">
-                                Ambil sendiri</label>
+                    <div class="cart-lines" id="cartLines"></div>
+                    <div class="cart-total-line checkout-total-line">
+                        <strong>Total pesanan</strong><strong id="checkoutSubtotal">Rp0</strong>
+                    </div>
+                    <p class="delivery-note">Ongkos kirim untuk pesanan diantar akan dikonfirmasi melalui WhatsApp.</p>
+
+                    <div class="checkout-section-heading checkout-details-heading">
+                        <h3>Detail pemesan</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="customerName">Nama pemesan</label>
+                            <input id="customerName" name="customer_name" autocomplete="name" maxlength="100"
+                                placeholder="Contoh: Rani" required>
+                        </div>
+                        <div class="field">
+                            <label for="customerPhone">Nomor HP / WhatsApp</label>
+                            <input id="customerPhone" name="customer_phone" type="tel" autocomplete="tel"
+                                inputmode="tel" maxlength="24" placeholder="08xx xxxx xxxx" required>
+                        </div>
+                        <div class="field full">
+                            <label for="customerAddress">Alamat pemesan</label>
+                            <textarea id="customerAddress" name="customer_address" autocomplete="street-address"
+                                maxlength="400" rows="3" placeholder="Nama jalan, nomor rumah, dan wilayah"
+                                required></textarea>
+                        </div>
+                        <div class="field full">
+                            <span class="field-label">Metode pesanan</span>
+                            <div class="fulfillment-options">
+                                <label class="fulfillment-option">
+                                    <input id="fulfillmentDelivery" type="radio" name="fulfillment" value="delivery"
+                                        checked>
+                                    <span class="fulfillment-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="6" cy="17.5" r="2.2"></circle>
+                                            <circle cx="18" cy="17.5" r="2.2"></circle>
+                                            <path
+                                                d="M8.2 17.5h5.4l2.2-5H18l2.5 5h-1.2M13.6 17.5l-2.1-5H9.2l-1 2.6H6.2M15.8 12.5l1.8-3h2">
+                                            </path>
+                                            <path d="M7.5 10h3.6v3H8.5zM13 9.5h3"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="fulfillment-copy">
+                                        <strong>Diantar ke alamat</strong>
+                                        <small>Pesanan dikirim ke lokasi Anda</small>
+                                    </span>
+                                </label>
+                                <label class="fulfillment-option">
+                                    <input id="fulfillmentPickup" type="radio" name="fulfillment" value="pickup">
+                                    <span class="fulfillment-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M4 10h16v10H4zM3 10l1.5-5h15L21 10"></path>
+                                            <path
+                                                d="M3 10a2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 2 0M9 20v-5h6v5">
+                                            </path>
+                                        </svg>
+                                    </span>
+                                    <span class="fulfillment-copy">
+                                        <strong>Ambil di outlet</strong>
+                                        <small>Siap diambil di outlet KS Tubun</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="field full" id="deliveryAddressField">
+                            <label for="deliveryAddress">Alamat pengantaran</label>
+                            <textarea id="deliveryAddress" name="delivery_address"
+                                autocomplete="shipping street-address" maxlength="400" rows="3"
+                                placeholder="Alamat lengkap tujuan pengantaran" required></textarea>
+                        </div>
+                        <div class="field">
+                            <label for="orderDate">Tanggal pesanan</label>
+                            <input id="orderDate" name="order_date" type="date" required>
+                        </div>
+                        <div class="field">
+                            <label for="orderTime">Jam pesanan</label>
+                            <input id="orderTime" name="order_time" type="time" required>
+                        </div>
+                        <div class="field full">
+                            <label for="orderNote">Keterangan lainnya <span
+                                    class="optional-label">Opsional</span></label>
+                            <textarea id="orderNote" name="order_note" maxlength="500" rows="3"
+                                placeholder="Level pedas, catatan lokasi, atau permintaan khusus"></textarea>
+                        </div>
+                        <div class="field">
+                            <label for="downPayment">Uang muka (Rp) <span class="optional-label">Opsional</span></label>
+                            <input id="downPayment" name="down_payment" type="number" min="0" step="500" value="0"
+                                inputmode="numeric" placeholder="0">
+                        </div>
+                        <div class="cart-total-line checkout-remaining-line">
+                            <strong>Sisa pembayaran</strong><strong id="remainingPayment">Rp0</strong>
                         </div>
                     </div>
-                    <div class="field full" id="deliveryAddressField"><label for="deliveryAddress">Alamat
-                            pengantaran</label><textarea id="deliveryAddress" name="delivery_address"
-                            autocomplete="shipping street-address" maxlength="400" required></textarea></div>
-                    <div class="field"><label for="orderDate">Tanggal pesanan</label><input id="orderDate"
-                            name="order_date" type="date" required></div>
-                    <div class="field"><label for="orderTime">Jam pesanan</label><input id="orderTime" name="order_time"
-                            type="time" required></div>
-                    <div class="field full"><label for="orderNote">Keterangan lainnya</label><textarea id="orderNote"
-                            name="order_note" maxlength="500"
-                            placeholder="Contoh: level pedas, catatan lokasi, atau permintaan khusus"></textarea></div>
-                    <div class="field"><label for="downPayment">DP (Rp)</label><input id="downPayment"
-                            name="down_payment" type="number" min="0" step="500" value="0" inputmode="numeric"></div>
-                    <div class="cart-total-line"><strong>Sisa pembayaran</strong><strong
-                            id="remainingPayment">Rp0</strong></div>
                 </div>
-                <div class="form-actions checkout-actions"><button class="button" type="submit">Lanjut pesan via
-                        WhatsApp</button></div>
+                <div class="form-actions checkout-actions">
+                    <button class="button" type="submit">Lanjut ke WhatsApp <span aria-hidden="true">↗</span></button>
+                </div>
             </form>
         </section>
     </dialog>

@@ -114,7 +114,7 @@ h1, h2, h3, p { margin-top: 0; }
 footer { padding: 19px 0 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
 .footer-inner { display: flex; justify-content: space-between; gap: 12px; }
 dialog { width: min(680px, calc(100% - 28px)); max-height: min(86vh, 800px); padding: 0; border: 0; border-radius: 8px; background: var(--paper); color: var(--ink); box-shadow: 0 22px 80px #1115; }
-dialog::backdrop { background: #161715a6; backdrop-filter: blur(3px); }
+dialog::backdrop { background: #161715a6; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
 .dialog-shell { padding: 24px; }
 .dialog-top { display: flex; justify-content: space-between; align-items: start; gap: 15px; margin-bottom: 20px; }
 .dialog-top h2 { margin-bottom: 4px; font: 600 28px var(--display); }
@@ -165,7 +165,7 @@ dialog::backdrop { background: #161715a6; backdrop-filter: blur(3px); }
     .catalog-tools { align-items: stretch; flex-direction: column-reverse; gap: 10px; }
     .search-box { flex-basis: auto; }
     .category-list { margin-inline: -4px; padding: 2px 4px 5px; }
-    .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .menu-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
     .menu-content { padding: 11px; }
     .menu-content h3 { font-size: 18px; }
     .menu-order-row { align-items: flex-start; flex-direction: column; }
@@ -354,6 +354,7 @@ dialog::backdrop { background: #161715a6; backdrop-filter: blur(3px); }
     line-height: 1.4;
     box-shadow: 0 1px 2px #11100808;
     -webkit-appearance: none;
+    -moz-appearance: none;
     appearance: none;
 }
 
@@ -391,6 +392,7 @@ dialog::backdrop { background: #161715a6; backdrop-filter: blur(3px); }
     padding: 9px 10px;
     font-size: 15px;
     -webkit-appearance: auto;
+    -moz-appearance: auto;
     appearance: auto;
 }
 
@@ -437,6 +439,8 @@ dialog::backdrop { background: #161715a6; backdrop-filter: blur(3px); }
 }
 
 .fulfillment-option input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
     appearance: none;
     display: grid;
     place-content: center;

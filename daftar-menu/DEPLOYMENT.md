@@ -1,6 +1,23 @@
 # Rocket Chicken KS Tubun
 
-Katalog ini menggunakan halaman statis, Supabase Database, Supabase Auth, dan Supabase Storage. Halaman katalog dan admin memakai tabel `public.menus`. URL project dan publishable key sudah diatur di `index.html` dan `admin.html`. Publishable key memang digunakan di browser; jangan pernah memasukkan `service_role` key ke file frontend.
+Katalog ini menggunakan halaman statis, Supabase Database, Supabase Auth, dan Supabase Storage. Halaman katalog dan admin memakai tabel `public.menus`. Konfigurasi Supabase berada di `js/app.js` dan `js/admin.js`. Publishable key memang digunakan di browser; jangan pernah memasukkan `service_role` key ke file frontend.
+
+## Struktur aset
+
+```text
+daftar-menu/
+  index.html
+  admin.html
+  img/                 # logo, favicon, dan gambar katalog/OG
+  css/
+    style.css          # katalog dan checkout
+    admin.css          # panel admin
+  js/
+    app.js             # katalog, keranjang, dan checkout
+    admin.js           # panel admin
+```
+
+Jaga path stylesheet dan skrip pada HTML tetap relatif terhadap folder `daftar-menu/`. Untuk menambah fitur checkout khusus, kode dapat dipisahkan ke `js/checkout.js` dan dimuat setelah `js/app.js`.
 
 ## 1. Siapkan Supabase
 
@@ -142,7 +159,7 @@ on conflict (user_id) do nothing;
 
 Panel admin menerima URL gambar publik saat menambah atau mengedit menu. Kolom ini opsional; biarkan kosong jika menu belum memiliki foto.
 
-1. Siapkan URL langsung ke gambar dari host publik. Gambar bisa disimpan di repo, misalnya `https://mfxnan.github.io/daftar-menu/asset/img/nama-menu.jpg`, atau diunggah ke **Storage > menu-images** di Supabase lalu salin **Public URL**. Bucket Supabase menerima JPG, PNG, WebP, atau GIF hingga 5 MB.
+1. Siapkan URL langsung ke gambar dari host publik. Gambar bisa disimpan di repo, misalnya `https://mfxnan.github.io/daftar-menu/img/nama-menu.jpg`, atau diunggah ke **Storage > menu-images** di Supabase lalu salin **Public URL**. Bucket Supabase menerima JPG, PNG, WebP, atau GIF hingga 5 MB.
 2. Buka `/daftar-menu/admin.html`, login, lalu tambah menu atau klik **Edit** pada menu yang fotonya ingin diganti.
 3. Tempel URL pada **URL gambar (opsional)**, lalu klik **Simpan menu** atau **Simpan perubahan**.
 4. Muat ulang katalog untuk memeriksa hasilnya. Kosongkan URL saat mengedit menu dan simpan untuk menghapus gambar dari kartu menu.
@@ -151,11 +168,11 @@ URL harus dapat diakses publik melalui HTTP/HTTPS dan langsung menuju file gamba
 
 ## 2. Atur kontak outlet
 
-Nilai `outletWhatsApp` di `index.html` saat ini sudah diisi. Jika nomor berubah, gunakan format internasional tanpa `+`, spasi, atau tanda baca; contoh: `62` diikuti nomor outlet.
+Nilai `outletWhatsApp` di `js/app.js` saat ini sudah diisi. Jika nomor berubah, gunakan format internasional tanpa `+`, spasi, atau tanda baca; contoh: `62` diikuti nomor outlet.
 
 ## 3. Deploy ke GitHub Pages
 
-1. Pastikan perubahan `daftar-menu/index.html`, `daftar-menu/admin.html`, dan panduan ini sudah masuk ke branch yang akan dipublikasikan.
+1. Pastikan folder `daftar-menu/` beserta `index.html`, `admin.html`, `css/`, `js/`, `img/`, dan panduan ini masuk ke branch yang akan dipublikasikan.
 2. Di GitHub, buka repository **Settings > Pages**.
 3. Pada **Build and deployment**, pilih **Deploy from a branch**, pilih branch publikasi (umumnya `main`) dan folder `/ (root)`, lalu simpan.
 4. Setelah deployment selesai, katalog tersedia di `https://mfxnan.github.io/daftar-menu/` dan panel admin di `https://mfxnan.github.io/daftar-menu/admin.html`.

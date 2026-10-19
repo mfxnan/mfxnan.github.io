@@ -12,6 +12,7 @@ const statusLabel = document.getElementById('connectionStatus');
 const rupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
 let menuItems = [];
 let activeCategory = '';
+let categoryCarousel = null;
 let toastTimeout;
 const cart = new Map();
 
@@ -65,18 +66,43 @@ function renderCategories() {
         return first.localeCompare(second, 'id', { sensitivity: 'base' });
     });
     if (!categories.includes(activeCategory)) activeCategory = categories[0] || '';
+    categoryCarousel?.destroy();
+    categoryCarousel = null;
     categoryList.replaceChildren();
-    categories.forEach(category => {
+    categories.forEach((category, index) => {
+        const slide = makeElement('li', 'splide__slide');
         const button = makeElement('button', `category-button${activeCategory === category ? ' active' : ''}`, category);
         button.type = 'button';
+        button.dataset.category = category;
         button.setAttribute('aria-pressed', String(activeCategory === category));
         button.addEventListener('click', () => {
             activeCategory = category;
-            renderCategories();
+            categoryList.querySelectorAll('.category-button').forEach(categoryButton => {
+                const isActive = categoryButton.dataset.category === activeCategory;
+                categoryButton.classList.toggle('active', isActive);
+                categoryButton.setAttribute('aria-pressed', String(isActive));
+            });
+            categoryCarousel?.go(index);
             renderMenu();
         });
-        categoryList.append(button);
+        slide.append(button);
+        categoryList.append(slide);
     });
+    if (categories.length && window.Splide) {
+        categoryCarousel = new window.Splide('#categoryCarousel', {
+            type: 'slide',
+            autoWidth: true,
+            drag: true,
+            arrows: false,
+            pagination: false,
+            gap: '8px',
+            padding: { left: '72px', right: '72px' },
+            breakpoints: {
+                850: { gap: '7px', padding: { left: '40px', right: '40px' } },
+                620: { gap: '6px', padding: { left: '16px', right: '16px' } }
+            }
+        }).mount();
+    }
 }
 
 function renderMenu() {
